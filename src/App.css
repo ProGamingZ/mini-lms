@@ -23,11 +23,46 @@ body { background-color: #f4f4f9; color: #333; }
 
 /* Folder Component */
 .folder-wrapper { margin-bottom: 8px; }
-.folder-header { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 10px; border-radius: 6px; transition: background 0.2s; user-select: none; }
+.folder-header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 12px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 8px; transition: background 0.2s; user-select: none; }
 .folder-header:hover { background: #e2e8f0; }
-.folder-icon { width: 28px; height: 28px; flex-shrink: 0; }
+.folder-title-row { display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; }
 .folder-title { font-size: 16px; font-weight: 500; color: #2c3e50; }
+.section-badges { display: flex; gap: 6px; margin-left: 10px; }
+.badge { background: #e0f2fe; color: #0284c7; font-size: 11px; padding: 3px 6px; border-radius: 12px; font-weight: bold; }
+
+/* Link Layout */
 .folder-links { list-style: none; padding-left: 50px; margin-top: 5px; margin-bottom: 15px; }
 .folder-links li { margin-bottom: 8px; }
 .folder-links a { text-decoration: none; color: #2980b9; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
 .folder-links a:hover { color: #1a5276; text-decoration: underline; }
+.add-file-btn { background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-bottom: 10px; font-size: 13px; }
+.file-item { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 8px 12px; border-radius: 4px; margin-bottom: 6px; }
+
+/* Create Folder Form */
+.create-folder-form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 25px; display: flex; flex-direction: column; gap: 12px; }
+.create-folder-form input[type="text"] { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+.section-checkboxes { display: flex; gap: 15px; flex-wrap: wrap; }
+.section-checkboxes label { font-size: 14px; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+.create-folder-form button { padding: 10px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; width: fit-content; }
+
+/* Unified Action Buttons for Folders and Files */
+.action-buttons { display: flex; gap: 10px; }
+.action-buttons button { background: transparent; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 13px; transition: 0.2s; }
+.action-buttons button:hover { background: #f1f2f6; }
+.action-buttons .delete-btn { color: #e74c3c; border-color: #e74c3c; }
+.action-buttons .delete-btn:hover { background: #fdf0ed; }
+
+/* Modal Styles */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.modal-content { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-header h3 { margin: 0; font-size: 20px; color: #2c3e50; }
+.close-modal { background: none; border: none; font-size: 24px; cursor: pointer; color: #7f8c8d; }
+.close-modal:hover { color: #2c3e50; }
+.modal-form { display: flex; flex-direction: column; gap: 15px; }
+.modal-form input[type="text"], .modal-form input[type="url"] { padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; width: 100%; box-sizing: border-box; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.modal-actions button { padding: 10px 15px; border-radius: 4px; border: none; cursor: pointer; font-size: 14px; }
+.modal-actions .delete-btn { background: #e74c3c; color: white; }
+.save-btn { background: #3498db; color: white; padding: 12px; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; }
+.save-btn:hover { background: #2980b9; }
