@@ -6,9 +6,10 @@ interface ActivityCardProps {
   title: string;
   instructions: string;
   targetSections: string[];
+  dueDate?: string; // Added due date prop
   allSections: string[];
   onDeleteActivity: (id: string) => void;
-  onEditActivity: (id: string, newTitle: string, newInstructions: string, newSections: string[]) => void;
+  onEditActivity: (id: string, newTitle: string, newInstructions: string, newSections: string[], newDueDate: string) => void;
 }
 
 export default function ActivityCard({
@@ -16,6 +17,7 @@ export default function ActivityCard({
   title,
   instructions,
   targetSections,
+  dueDate,
   allSections,
   onDeleteActivity,
   onEditActivity
@@ -23,6 +25,7 @@ export default function ActivityCard({
   const [activeModal, setActiveModal] = useState<'edit' | 'delete' | null>(null);
   const [editTitle, setEditTitle] = useState(title);
   const [editInstructions, setEditInstructions] = useState(instructions);
+  const [editDueDate, setEditDueDate] = useState(dueDate || '');
   const [editSections, setEditSections] = useState<string[]>(targetSections || []);
 
   const toggleSection = (section: string) => {
@@ -36,7 +39,7 @@ export default function ActivityCard({
     if (!editTitle.trim() || editSections.length === 0) {
       return alert("Title and at least one section are required.");
     }
-    onEditActivity(id, editTitle, editInstructions, editSections);
+    onEditActivity(id, editTitle, editInstructions, editSections, editDueDate);
     setActiveModal(null);
   };
 
@@ -56,16 +59,14 @@ export default function ActivityCard({
             onClick={() => {
               setEditTitle(title);
               setEditInstructions(instructions);
+              setEditDueDate(dueDate || '');
               setEditSections(targetSections || []);
               setActiveModal('edit');
             }}
           >
             Edit Activity
           </button>
-          <button
-            onClick={() => setActiveModal('delete')}
-            className="delete-btn"
-          >
+          <button onClick={() => setActiveModal('delete')} className="delete-btn">
             Delete Activity
           </button>
         </div>
@@ -76,11 +77,7 @@ export default function ActivityCard({
       </div>
 
       {/* Edit Modal */}
-      <Modal
-        isOpen={activeModal === 'edit'}
-        onClose={() => setActiveModal(null)}
-        title="Edit Activity"
-      >
+      <Modal isOpen={activeModal === 'edit'} onClose={() => setActiveModal(null)} title="Edit Activity">
         <form onSubmit={handleEditSubmit} className="modal-form">
           <input
             type="text"
@@ -96,6 +93,15 @@ export default function ActivityCard({
             rows={5}
             required
           />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+            <label style={{ fontSize: '14px', color: '#555', fontWeight: 'bold' }}>Due Date (Optional):</label>
+            <input 
+              type="date" 
+              value={editDueDate} 
+              onChange={e => setEditDueDate(e.target.value)} 
+              style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '4px', width: 'fit-content' }} 
+            />
+          </div>
           <div className="section-checkboxes">
             {allSections.map(sec => (
               <label key={sec}>
@@ -113,17 +119,11 @@ export default function ActivityCard({
       </Modal>
 
       {/* Delete Modal */}
-      <Modal
-        isOpen={activeModal === 'delete'}
-        onClose={() => setActiveModal(null)}
-        title="Confirm Deletion"
-      >
+      <Modal isOpen={activeModal === 'delete'} onClose={() => setActiveModal(null)} title="Confirm Deletion">
         <p>Are you sure you want to delete this activity?</p>
         <div className="modal-actions">
           <button onClick={() => setActiveModal(null)}>Cancel</button>
-          <button onClick={() => onDeleteActivity(id)} className="delete-btn">
-            Delete
-          </button>
+          <button onClick={() => onDeleteActivity(id)} className="delete-btn">Delete</button>
         </div>
       </Modal>
     </div>
