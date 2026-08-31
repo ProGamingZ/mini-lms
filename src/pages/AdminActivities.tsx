@@ -10,23 +10,47 @@ import {
   query,
   orderBy
 } from 'firebase/firestore';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 import ActivityCard from '../components/ActivityCard';
 
 const SECTIONS = ["BSCS_3A", "BSCS_3B", "BSCS_3C", "BSIT_3A", "BSIT_3C"];
 
 export default function AdminActivities() {
   const [activities, setActivities] = useState<any[]>([]);
+  const [students, setStudents] = useState<any[]>([]);
+  const [submissions, setSubmissions] = useState<any[]>([]);
+  
+  // UI States
   const [isCreatingActivity, setIsCreatingActivity] = useState(false);
   const [activityTitle, setActivityTitle] = useState('');
   const [activityInstructions, setActivityInstructions] = useState('');
   const [selectedActivitySections, setSelectedActivitySections] = useState<string[]>([]);
+  const [selectedActivityForReview, setSelectedActivityForReview] = useState<any | null>(null);
 
+  // 1. Fetch Activities
   useEffect(() => {
     const q = query(collection(db, 'activities'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setActivities(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    const unsub = onSnapshot(q, (snapshot) => {
+      setActivities(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
     });
-    return () => unsubscribe();
+    return () => unsub();
+  }, []);
+
+  // 2. Fetch All Students (for section enrollment counts)
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'users'), (snapshot) => {
+      setStudents(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+    return () => unsub();
+  }, []);
+
+  // 3. Fetch All Submissions
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'submissions'), (snapshot) => {
+      setSubmissions(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+    return () => unsub();
   }, []);
 
   const toggleActivitySection = (section: string) => {
@@ -54,12 +78,7 @@ export default function AdminActivities() {
     setIsCreatingActivity(false);
   };
 
-  const handleEditActivity = async (
-    id: string,
-    newTitle: string,
-    newInstructions: string,
-    newSections: string[]
-  ) => {
+  const handleEditActivity = async (id: string, newTitle: string, newInstructions: string, newSections: string[]) => {
     await updateDoc(doc(db, 'activities', id), {
       title: newTitle,
       instructions: newInstructions,
@@ -71,9 +90,32 @@ export default function AdminActivities() {
     await deleteDoc(doc(db, 'activities', id));
   };
 
+  // --- Bulk ZIP Download by Section ---
+  const downloadSectionSubmissions = async (activityId: string, activityName: string, section: string) => {
+    const sectionSubmissions = submissions.filter(
+      s => s.activityId === activityId && s.section === section
+    );
+
+    if (sectionSubmissions.length === 0) {
+      return alert(`No submissions found for ${section}.`);
+    }
+
+    const zip = new JSZip();
+    sectionSubmissions.forEach(sub => {
+      // Formats file name: LastName_FirstName_originalFileName.js
+      const cleanStudentName = (sub.studentName || 'Student').replace(/[^a-zA-Z0-9_-]/g, '_');
+      const zipFileName = `${cleanStudentName}_${sub.fileName}`;
+      zip.file(zipFileName, sub.code);
+    });
+
+    const content = await zip.generateAsync({ type: 'blob' });
+    saveAs(content, `${activityName}_${section}_Submissions.zip`);
+  };
+
   return (
     <section>
       <h3>Activities & Assignments</h3>
+
       {!isCreatingActivity ? (
         <button
           className="add-file-btn"
@@ -126,15 +168,86 @@ export default function AdminActivities() {
 
       <div className="activities-list">
         {activities.map(activity => (
-          <ActivityCard
-            key={activity.id}
-            {...activity}
-            allSections={SECTIONS}
-            onDeleteActivity={handleDeleteActivity}
-            onEditActivity={handleEditActivity}
-          />
+          <div key={activity.id} className="activity-admin-wrapper">
+            <ActivityCard
+              {...activity}
+              allSections={SECTIONS}
+              onDeleteActivity={handleDeleteActivity}
+              onEditActivity={handleEditActivity}
+            />
+
+            {/* Submission Stats & Section Control */}
+            <div className="activity-stats-panel">
+              <h4>Submissions Tracker:</h4>
+              <div className="section-stats-grid">
+                {activity.targetSections?.map((section: string) => {
+                  const enrolledCount = students.filter(st => st.section === section).length;
+                  const sectionSubmissions = submissions.filter(
+                    sub => sub.activityId === activity.id && sub.section === section
+                  );
+                  const submittedCount = sectionSubmissions.length;
+
+                  return (
+                    <div key={section} className="section-stat-card">
+                      <div className="stat-header">
+                        <strong>{section}</strong>
+                        <span className="stat-counter">
+                          {submittedCount} / {enrolledCount} Done
+                        </span>
+                      </div>
+
+                      <div className="stat-actions">
+                        <button
+                          className="review-btn"
+                          onClick={() => setSelectedActivityForReview({ activity, section, sectionSubmissions })}
+                        >
+                          View List ({submittedCount})
+                        </button>
+                        <button
+                          className="download-btn"
+                          onClick={() => downloadSectionSubmissions(activity.id, activity.title, section)}
+                          disabled={submittedCount === 0}
+                        >
+                          📦 Download ZIP
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         ))}
       </div>
+
+      {/* Review Submissions Modal */}
+      {selectedActivityForReview && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '600px' }}>
+            <div className="modal-header">
+              <h3>{selectedActivityForReview.activity.title} - {selectedActivityForReview.section}</h3>
+              <button className="close-modal" onClick={() => setSelectedActivityForReview(null)}>&times;</button>
+            </div>
+            <div className="modal-body" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+              {selectedActivityForReview.sectionSubmissions.length === 0 ? (
+                <p>No submissions yet for this section.</p>
+              ) : (
+                <ul className="submissions-review-list">
+                  {selectedActivityForReview.sectionSubmissions.map((sub: any) => (
+                    <li key={sub.studentId} className="submission-row">
+                      <div>
+                        <strong>{sub.studentName}</strong>
+                        <div style={{ fontSize: '12px', color: '#777' }}>File: {sub.fileName}</div>
+                      </div>
+                      <span className="submission-badge">Submitted</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
