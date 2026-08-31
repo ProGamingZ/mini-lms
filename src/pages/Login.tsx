@@ -1,36 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../config/firebase';
+import { auth } from '../config/firebase';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { currentUser, role, loading } = useAuth();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!loading && currentUser && role) {
+      navigate(`/${role}-dashboard`);
+    }
+  }, [currentUser, role, loading, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Check if user has a student document in Firestore
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-
-      if (userDoc.exists()) {
-        navigate('/student-dashboard');
-      } else {
-        // Super admin accounts are created directly in Auth without a Firestore document
-        navigate('/admin-dashboard');
-      }
+      await signInWithEmailAndPassword(auth, email, password);
+      // We no longer need manual routing here; the useEffect above handles it once AuthContext updates
     } catch (err: any) {
       setError("Invalid email or password.");
     }
   };
+
+  if (loading) return <div className="login-container"><h2>Loading...</h2></div>;
 
   return (
     <div className="login-container">
