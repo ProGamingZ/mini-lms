@@ -11,8 +11,9 @@ export default function StudentDashboard() {
   const [studentData, setStudentData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
   const [activeTab, setActiveTab] = useState<'lessons' | 'activities'>('lessons');
-  const [activitySubTab, setActivitySubTab] = useState<'ongoing' | 'pastDue'>('ongoing'); // New State
+  const [activitySubTab, setActivitySubTab] = useState<'ongoing' | 'pastDue'>('ongoing');
   const [folders, setFolders] = useState<any[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
   
@@ -53,6 +54,11 @@ export default function StudentDashboard() {
       setLoading(false);
     };
     fetchStudentData();
+
+    // Auto-collapse sidebar on mobile resize
+    const handleResize = () => setIsSidebarOpen(window.innerWidth > 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [navigate]);
 
   const handleLogout = async () => {
@@ -94,7 +100,7 @@ export default function StudentDashboard() {
       }
     } catch (err: any) {
       if (err.code === 'auth/requires-recent-login') {
-        setPasswordMessage('❌ For security, please log out and log back in before changing your password.');
+        setPasswordMessage('❌ Please log out and log back in before changing your password.');
       } else {
         setPasswordMessage('❌ Error: ' + err.message);
       }
@@ -103,7 +109,6 @@ export default function StudentDashboard() {
     }
   };
 
-  // --- Filtering Logic for Activities ---
   const isActivityLate = (dueDateString?: string) => {
     if (!dueDateString) return false;
     const dueDate = new Date(dueDateString);
@@ -119,25 +124,40 @@ export default function StudentDashboard() {
 
   return (
     <div className="dashboard-container">
-      <aside className="sidebar">
-        <h2>{studentData?.firstName} {studentData?.lastName}</h2>
-        
-        <div className="student-info-panel">
-          <p className="student-section">Section: {studentData?.section}</p>
-          <div className="email-row">
-            <span className="student-email" title={auth.currentUser?.email || ''}>
-              {auth.currentUser?.email}
-            </span>
-            <button className="edit-email-btn" onClick={() => { setIsEditEmailModalOpen(true); setEmailMessage(''); }}>Edit</button>
-          </div>
-          <button className="change-password-btn" onClick={() => { setIsPasswordModalOpen(true); setPasswordMessage(''); setNewPassword(''); setConfirmPassword(''); }}>
-            🔑 Change Password
+      <aside className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
+        <div className="sidebar-header">
+          {isSidebarOpen && <h2>{studentData?.firstName}</h2>}
+          <button className="toggle-sidebar-btn" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+            {isSidebarOpen ? '◀' : '▶'}
           </button>
         </div>
+        
+        {isSidebarOpen && (
+          <div className="student-info-panel">
+            <p className="student-section">Section: {studentData?.section}</p>
+            <div className="email-row">
+              <span className="student-email" title={auth.currentUser?.email || ''}>
+                {auth.currentUser?.email}
+              </span>
+              <button className="edit-email-btn" onClick={() => { setIsEditEmailModalOpen(true); setEmailMessage(''); }}>Edit</button>
+            </div>
+            <button className="change-password-btn" onClick={() => { setIsPasswordModalOpen(true); setPasswordMessage(''); setNewPassword(''); setConfirmPassword(''); }}>
+              🔑 Change Password
+            </button>
+          </div>
+        )}
 
-        <button onClick={() => setActiveTab('lessons')} className={activeTab === 'lessons' ? 'active' : ''}>Lessons</button>
-        <button onClick={() => setActiveTab('activities')} className={activeTab === 'activities' ? 'active' : ''}>Activities</button>
-        <button onClick={handleLogout} className="logout-btn">Logout</button>
+        <nav className="sidebar-nav">
+          <button onClick={() => setActiveTab('lessons')} className={activeTab === 'lessons' ? 'active' : ''}>
+            {isSidebarOpen ? 'Lessons' : 'L'}
+          </button>
+          <button onClick={() => setActiveTab('activities')} className={activeTab === 'activities' ? 'active' : ''}>
+            {isSidebarOpen ? 'Activities' : 'A'}
+          </button>
+        </nav>
+        <button onClick={handleLogout} className="logout-btn">
+          {isSidebarOpen ? 'Logout' : 'X'}
+        </button>
       </aside>
       
       <main className="main-content">
@@ -157,7 +177,6 @@ export default function StudentDashboard() {
         {activeTab === 'activities' && (
           <section>
             <h3>My Activities</h3>
-            
             <div className="review-tabs" style={{ marginBottom: '20px' }}>
               <button className={activitySubTab === 'ongoing' ? 'active' : ''} onClick={() => setActivitySubTab('ongoing')}>
                 Ongoing ({ongoingActivities.length})
