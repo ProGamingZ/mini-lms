@@ -28,6 +28,9 @@ export default function StudentDashboard() {
   const [passwordMessage, setPasswordMessage] = useState('');
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [isRubricModalOpen, setIsRubricModalOpen] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -176,7 +179,12 @@ export default function StudentDashboard() {
 
         {activeTab === 'activities' && (
           <section>
-            <h3>My Activities</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+              <h3>My Activities</h3>
+              <button className="view-rubric-btn" onClick={() => setIsRubricModalOpen(true)}>
+                📋 View Grading Rubric
+              </button>
+            </div>
             <div className="review-tabs" style={{ marginBottom: '20px' }}>
               <button className={activitySubTab === 'ongoing' ? 'active' : ''} onClick={() => setActivitySubTab('ongoing')}>
                 Ongoing ({ongoingActivities.length})
@@ -220,11 +228,80 @@ export default function StudentDashboard() {
       <Modal isOpen={isPasswordModalOpen} onClose={() => setIsPasswordModalOpen(false)} title="Change Password">
         <form onSubmit={handleUpdatePassword} className="modal-form">
           <p style={{ fontSize: '14px', color: '#666', marginBottom: '10px' }}>Choose a strong password with at least 6 characters.</p>
-          <input type="password" placeholder="New Password" value={newPassword} onChange={e => setNewPassword(e.target.value)} required />
-          <input type="password" placeholder="Confirm New Password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
+          
+          <div className="password-wrapper">
+            <input type={showPassword ? 'text' : 'password'} placeholder="New Password" value={newPassword} onChange={e => setNewPassword(e.target.value)} required />
+            <button type="button" className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
+          </div>
+          
+          <div className="password-wrapper">
+            <input type={showPassword ? 'text' : 'password'} placeholder="Confirm New Password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
+          </div>
+
           {passwordMessage && <p style={{ fontSize: '14px', marginTop: '10px', color: passwordMessage.includes('❌') ? '#e74c3c' : '#27ae60' }}>{passwordMessage}</p>}
           <button type="submit" className="save-btn" disabled={isUpdatingPassword} style={{ background: '#2c3e50' }}>{isUpdatingPassword ? 'Updating...' : 'Update Password'}</button>
         </form>
+      </Modal>
+
+      <Modal isOpen={isRubricModalOpen} onClose={() => setIsRubricModalOpen(false)} title="Lab Activity Rubric" maxWidth="900px">
+        <div className="table-responsive">
+          <table className="rubric-table">
+            <thead>
+              <tr>
+                <th>Criteria</th>
+                <th>Weight</th>
+                <th>Excellent (4)</th>
+                <th>Good (3)</th>
+                <th>Fair (2)</th>
+                <th>Poor (1)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Structural Requirements</strong></td>
+                <td>30%</td>
+                <td>Meets all minimum counts for procedural (e.g., 3 loops, 3 arrays) or OOP elements (e.g., 4 classes, 2 object literals) as examples; code runs flawlessly</td>
+                <td>Missing 1-2 minor requirements; runs with minor issues.</td>
+                <td>Missing several requirements; code has noticeable bugs.</td>
+                <td>Fails to meet most requirements; code does not run.</td>
+              </tr>
+              <tr>
+                <td><strong>Concept Application & Logic</strong></td>
+                <td>30%</td>
+                <td>Procedural logic and OOP pillars (Encapsulation, Abstraction, Inheritance, Polymorphism) are implemented logically and accurately.</td>
+                <td>Concepts are used correctly, but logic is slightly forced or inefficient.</td>
+                <td>Misunderstanding of core concepts (e.g., forced inheritance that makes no logical sense).</td>
+                <td>Concepts are used incorrectly or are entirely missing.</td>
+              </tr>
+              <tr>
+                <td><strong>Syntax & Best Practices</strong></td>
+                <td>15%</td>
+                <td>Proper use of modern JS syntax (let/const, arrow functions); follows best practices.</td>
+                <td>Minor syntax issues; mostly follows conventions</td>
+                <td>Several syntax errors or inconsistent style</td>
+                <td>Frequent syntax errors; poor coding conventions</td>
+              </tr>
+              <tr>
+                <td><strong>Code Readability & Organization</strong></td>
+                <td>15%</td>
+                <td>Well-structured, consistent indentation, highly descriptive naming.</td>
+                <td>Generally readable with minor lapses</td>
+                <td>Somewhat disorganized; unclear naming</td>
+                <td>Poorly organized; hard to follow</td>
+              </tr>
+              <tr>
+                <td><strong>Comments & Documentation</strong></td>
+                <td>10%</td>
+                <td>Clear, helpful comments explaining the "why" behind their open-ended logic.</td>
+                <td>Some comments present but incomplete</td>
+                <td>Few or unclear comments</td>
+                <td>No comments/documentation</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </Modal>
     </div>
   );
