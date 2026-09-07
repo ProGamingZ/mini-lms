@@ -197,7 +197,7 @@ export default function AdminActivities() {
                           View List
                         </button>
                         <button className="download-btn" onClick={() => downloadSectionSubmissions(activity.id, activity.title, section)} disabled={submittedCount === 0}>
-                          📦 ZIP
+                          ZIP
                         </button>
                       </div>
                     </div>

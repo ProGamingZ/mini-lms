@@ -33,6 +33,13 @@ export default function StudentDashboard() {
 
   const navigate = useNavigate();
 
+  const [theme, setTheme] = useState('light');
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+  };
+
   useEffect(() => {
     const fetchStudentData = async () => {
       const user = auth.currentUser;
@@ -164,56 +171,70 @@ export default function StudentDashboard() {
       </aside>
       
       <main className="main-content">
-        {activeTab === 'lessons' && (
-          <section>
-            <h3>My Instructional Materials</h3>
-            <div className="lessons-container">
-              {folders.length === 0 ? (
-                <div className="empty-state"><span className="empty-icon">📂</span><h4>No Materials Yet</h4><p>Your instructor has not assigned any folders to your section yet.</p></div>
-              ) : (
-                folders.map(folder => <StudentFolder key={folder.id} {...folder} />)
-              )}
-            </div>
-          </section>
-        )}
+        <header className="sticky-header">
+          <h2 className="header-title">Mini-LMS Platform</h2>
+          <button className="theme-toggle-btn" onClick={toggleTheme}>
+            {theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}
+          </button>
+        </header>
 
-        {activeTab === 'activities' && (
-          <section>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-              <h3>My Activities</h3>
-              <button className="view-rubric-btn" onClick={() => setIsRubricModalOpen(true)}>
-                📋 View Grading Rubric
-              </button>
-            </div>
-            <div className="review-tabs" style={{ marginBottom: '20px' }}>
-              <button className={activitySubTab === 'ongoing' ? 'active' : ''} onClick={() => setActivitySubTab('ongoing')}>
-                Ongoing ({ongoingActivities.length})
-              </button>
-              <button className={activitySubTab === 'pastDue' ? 'active' : ''} onClick={() => setActivitySubTab('pastDue')}>
-                Past Due ({pastDueActivities.length})
-              </button>
-            </div>
+        <div className="content-wrapper">
+          {activeTab === 'lessons' && (
+            <section>
+              <h3>My Instructional Materials</h3>
+              <div className="lessons-container">
+                {folders.length === 0 ? (
+                  <div className="empty-state"><span className="empty-icon">📂</span><h4>No Materials Yet</h4><p>Your instructor has not assigned any folders to your section yet.</p></div>
+                ) : (
+                  folders.map(folder => <StudentFolder key={folder.id} {...folder} />)
+                )}
+              </div>
+            </section>
+          )}
 
-            <div className="activities-list">
-              {displayedActivities.length === 0 ? (
-                <div className="empty-state">
-                  <span className="empty-icon">📝</span>
-                  <h4>No {activitySubTab === 'ongoing' ? 'Ongoing' : 'Past Due'} Activities</h4>
-                  <p>You have no assignments in this category.</p>
-                </div>
-              ) : (
-                displayedActivities.map(activity => (
-                  <StudentActivity 
-                    key={activity.id} 
-                    {...activity} 
-                    studentSection={studentData?.section}
-                    studentName={`${studentData?.lastName}, ${studentData?.firstName}`}
-                  />
-                ))
-              )}
-            </div>
-          </section>
-        )}
+          {activeTab === 'activities' && (
+            <section>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                <h3>My Activities</h3>
+                <button className="view-rubric-btn" onClick={() => setIsRubricModalOpen(true)}>
+                  📋 View Grading Rubric
+                </button>
+              </div>
+              <div className="review-tabs" style={{ marginBottom: '20px' }}>
+                <button className={activitySubTab === 'ongoing' ? 'active' : ''} onClick={() => setActivitySubTab('ongoing')}>
+                  Ongoing ({ongoingActivities.length})
+                </button>
+                <button className={activitySubTab === 'pastDue' ? 'active' : ''} onClick={() => setActivitySubTab('pastDue')}>
+                  Past Due ({pastDueActivities.length})
+                </button>
+              </div>
+
+              <div className="activities-list">
+                {displayedActivities.length === 0 ? (
+                  <div className="empty-state">
+                    <span className="empty-icon">📝</span>
+                    <h4>No {activitySubTab === 'ongoing' ? 'Ongoing' : 'Past Due'} Activities</h4>
+                    <p>You have no assignments in this category.</p>
+                  </div>
+                ) : (
+                  displayedActivities.map(activity => (
+                    <StudentActivity 
+                      key={activity.id} 
+                      {...activity} 
+                      studentSection={studentData?.section}
+                      studentName={`${studentData?.lastName}, ${studentData?.firstName}`}
+                    />
+                  ))
+                )}
+              </div>
+            </section>
+          )}
+        </div>
+
+        <footer className="app-footer">
+          <p>© 2026 Mini-LMS. All rights reserved.</p>
+          <p>Version 1.0.0 | <a href="mailto:admin@example.com">Contact Support</a></p>
+        </footer>
       </main>
 
       <Modal isOpen={isEditEmailModalOpen} onClose={() => setIsEditEmailModalOpen(false)} title="Link Real Email">

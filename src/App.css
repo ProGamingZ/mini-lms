@@ -1,5 +1,25 @@
+/* Base Variables (Light Mode) */
+:root {
+  --bg-main: #f4f4f9;
+  --bg-card: #ffffff;
+  --text-main: #333333;
+  --text-muted: #666666;
+  --border-color: #e2e8f0;
+  --header-bg: #ffffff; /* Changed to solid white */
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] {
+  --bg-main: #0f172a;
+  --bg-card: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  --header-bg: #1e293b; /* Changed to solid dark slate */
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-body { background-color: #f4f4f9; color: #333; }
+body { background-color: var(--bg-main); color: var(--text-main); transition: background 0.3s, color 0.3s; }
 
 .login-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
 .login-box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 15px; }
@@ -10,7 +30,7 @@ body { background-color: #f4f4f9; color: #333; }
 .error-text { color: #e74c3c; font-size: 14px; text-align: center; }
 
 /* Dashboard Layout & Collapsible Sidebar */
-.dashboard-container { display: flex; min-height: 100vh; background: #f4f4f9; width: 100%; }
+.dashboard-container { display: flex; min-height: 100vh; background: var(--bg-main); width: 100%; transition: background 0.3s; }
 .sidebar {
   background: #2c3e50;
   color: white;
@@ -19,10 +39,15 @@ body { background-color: #f4f4f9; color: #333; }
   flex-direction: column;
   gap: 10px;
   transition: width 0.25s ease, padding 0.25s ease;
-  overflow: hidden;
+  overflow-y: auto;
   white-space: nowrap;
+  height: 100vh; /* Forces sidebar to exactly screen height */
+  position: sticky; /* Locks it in place */
+  top: 0;
 }
-.sidebar.open { width: 240px; }
+/* Ensure the logout button shrinks properly but stays at bottom */
+.sidebar .logout-btn { margin-top: auto; background: #e74c3c; text-align: center; flex-shrink: 0; }
+.sidebar.open { width: 180px; }
 .sidebar.closed { width: 65px; align-items: center; }
 
 .sidebar-header {
@@ -62,9 +87,20 @@ body { background-color: #f4f4f9; color: #333; }
 .sidebar .logout-btn { margin-top: auto; background: #e74c3c; text-align: center; }
 .sidebar .logout-btn:hover { background: #c0392b; }
 
-.main-content { flex: 1; padding: 40px; overflow-y: auto; }
-.main-content h3 { font-size: 28px; margin-bottom: 10px; color: #2c3e50; }
-.main-content p { color: #666; }
+.main-content { 
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.main-content h3 { font-size: 28px; margin-bottom: 10px; color: var(--text-main); }
+.main-content p { color: var(--text-muted); }
+
+/* The new wrapper you added inside main-content */
+.content-wrapper {
+  padding: 30px 40px;
+  flex: 1; /* Pushes the footer down automatically */
+}
 
 /* Folder Component */
 .folder-wrapper { margin-bottom: 8px; }
@@ -265,6 +301,131 @@ body { background-color: #f4f4f9; color: #333; }
   font-weight: bold; 
 }
 
+/* Header and Footer */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--header-bg);
+  backdrop-filter: blur(8px);
+  padding: 15px 40px; /* Aligns with content-wrapper padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  margin: 0; /* Removed negative margins */
+}
+
+.header-title { font-size: 18px; margin: 0; color: var(--text-main); }
+
+.theme-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+.theme-toggle-btn:hover { background: var(--border-color); }
+
+.app-footer {
+  margin-top: auto; /* Forces footer to the absolute bottom */
+  padding: 20px 40px;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  background: var(--bg-main);
+}
+.app-footer a { color: #3498db; text-decoration: none; }
+
+/* Deep Component Backgrounds for Dark Mode */
+[data-theme="dark"] .activity-card, 
+[data-theme="dark"] .create-folder-form, 
+[data-theme="dark"] .modal-content, 
+[data-theme="dark"] .folder-header,
+[data-theme="dark"] .activity-stats-panel,
+[data-theme="dark"] .empty-state,
+[data-theme="dark"] .section-stat-card,
+[data-theme="dark"] .submission-row,
+[data-theme="dark"] .rubric-table th,
+[data-theme="dark"] .rubric-table td,
+[data-theme="dark"] .review-tabs { 
+  background: var(--bg-card); 
+  border-color: var(--border-color); 
+}
+
+/* Deep Text Color Overrides for Dark Mode */
+[data-theme="dark"] h4,
+[data-theme="dark"] .activity-card-title, 
+[data-theme="dark"] .folder-title,
+[data-theme="dark"] .empty-state h4,
+[data-theme="dark"] .activity-stats-panel h4 { 
+  color: var(--text-main); 
+}
+
+[data-theme="dark"] .activity-instructions,
+[data-theme="dark"] .empty-state p,
+[data-theme="dark"] .stat-header,
+[data-theme="dark"] .due-date-text,
+[data-theme="dark"] .review-tabs button,
+[data-theme="dark"] .folder-links a,
+[data-theme="dark"] .submission-row {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .review-tabs button.active { color: #3498db; }
+[data-theme="dark"] .file-item { background: var(--bg-main); border: 1px solid var(--border-color); }
+[data-theme="dark"] .current-submission-info { background: #0c4a6e; color: #e0f2fe; border-left-color: #38bdf8; }
+
+/* Dark Mode Component Overrides */
+[data-theme="dark"] .action-buttons button {
+  color: var(--text-main);
+  border-color: var(--border-color);
+}
+[data-theme="dark"] .action-buttons button:hover {
+  background: var(--border-color);
+}
+[data-theme="dark"] .action-buttons .delete-btn {
+  color: #f87171; /* Brighter red for visibility */
+  border-color: #f87171;
+}
+[data-theme="dark"] .action-buttons .delete-btn:hover {
+  background: #7f1d1d; /* Dark red background on hover */
+}
+
+/* Fix Badges and Counters in Dark Mode */
+[data-theme="dark"] .badge,
+[data-theme="dark"] .stat-counter {
+  background: #0c4a6e; /* Deep ocean blue */
+  color: #7dd3fc; /* Light sky blue text */
+}
+
+/* Fix Add/Create Buttons in Dark Mode */
+[data-theme="dark"] .add-file-btn,
+[data-theme="dark"] .save-btn {
+  background: #0ea5e9; /* Slightly brighter blue */
+  color: #ffffff;
+}
+[data-theme="dark"] .add-file-btn:hover,
+[data-theme="dark"] .save-btn:hover {
+  background: #0284c7;
+}
+
+/* Fix ZIP Button Active/Inactive States in Dark Mode */
+[data-theme="dark"] .download-btn { 
+  background: #16a34a; /* Vibrant green */
+  color: #ffffff;
+}
+[data-theme="dark"] .download-btn:disabled { 
+  background: #334155; /* Slate gray */
+  color: #64748b; /* Muted text */
+}
+
+
 /* --- Mobile Responsiveness (Sidebar, Layout, & Rubric) --- */
 @media (max-width: 768px) {
   /* 1. Sidebar & Main Layout Fixes (Overlays the screen) */
@@ -281,12 +442,14 @@ body { background-color: #f4f4f9; color: #333; }
   
   .main-content { 
     margin-left: 60px; 
-    padding: 15px; 
     width: calc(100% - 60px); 
     max-width: calc(100vw - 60px); 
     overflow-x: hidden;
   }
-  .main-content h3 { font-size: 22px; }
+  .content-wrapper { padding: 15px; }
+  .sticky-header { padding: 15px; }
+  .app-footer { padding: 15px; }
+  .main-content h3 { font-size: 22px; margin-left: 15px; margin-top: 15px; }
 
   /* Stack layout elements vertically */
   .activity-card-header { flex-direction: column; gap: 15px; align-items: flex-start; }
