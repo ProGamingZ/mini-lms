@@ -353,7 +353,7 @@ body { background-color: var(--bg-main); color: var(--text-main); transition: ba
 [data-theme="dark"] .submission-row,
 [data-theme="dark"] .rubric-table th,
 [data-theme="dark"] .rubric-table td,
-[data-theme="dark"] .review-tabs { 
+[data-theme="dark"] .review-tabs{  /* Added login-box here */
   background: var(--bg-card); 
   border-color: var(--border-color); 
 }
@@ -363,7 +363,7 @@ body { background-color: var(--bg-main); color: var(--text-main); transition: ba
 [data-theme="dark"] .activity-card-title, 
 [data-theme="dark"] .folder-title,
 [data-theme="dark"] .empty-state h4,
-[data-theme="dark"] .activity-stats-panel h4 { 
+[data-theme="dark"] .activity-stats-panel h4{ 
   color: var(--text-main); 
 }
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { auth } from '../config/firebase';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
@@ -10,15 +10,25 @@ export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
 
-  const [theme, setTheme] = useState('light');
+  // Safely initialize state from localStorage or the current active DOM theme
+  const [theme, setTheme] = useState(
+    localStorage.getItem('theme') || document.documentElement.getAttribute('data-theme') || 'light'
+  );
+
+  // Automatically sync the DOM and localStorage whenever the theme state changes
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
   const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
   const handleLogout = async () => {
     await signOut(auth);
+    localStorage.removeItem('theme'); // Clear theme token
+    document.documentElement.removeAttribute('data-theme'); // Strip DOM attribute instantly
     navigate('/login');
   };
 
