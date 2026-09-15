@@ -12,8 +12,8 @@ import {
 } from 'firebase/firestore';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import ActivityCard from '../components/ActivityCard';
-import Modal from '../components/Modal';
+import ActivityCard from './ActivityCard';
+import Modal from './Modal';
 
 const SECTIONS = ["BSCS_3A", "BSCS_3B", "BSCS_3C", "BSIT_3A", "BSIT_3C"];
 

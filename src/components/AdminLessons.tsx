@@ -10,7 +10,7 @@ import {
   query,
   orderBy
 } from 'firebase/firestore';
-import Folder from '../components/Folder';
+import Folder from './Folder';
 
 const SECTIONS = ["BSCS_3A", "BSCS_3B", "BSCS_3C", "BSIT_3A", "BSIT_3C"];
 

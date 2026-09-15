@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { auth } from '../config/firebase';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import AdminLessons from './AdminLessons';
-import AdminActivities from './AdminActivities';
+import AdminLessons from '../components/AdminLessons';
+import AdminActivities from '../components/AdminActivities';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'lessons' | 'activities'>('lessons');
