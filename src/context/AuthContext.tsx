@@ -20,12 +20,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setCurrentUser(user);
-        // Check Firestore to determine role. Admins do not have a Firestore document.
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        if (userDoc.exists()) {
-          setRole('student');
-        } else {
+        // 1. Explicitly check if this user is a registered Admin
+        const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+        
+        if (adminDoc.exists()) {
           setRole('admin');
+        } else {
+          // 2. If not an admin, verify they are a registered student
+          const studentDoc = await getDoc(doc(db, 'users', user.uid));
+          
+          if (studentDoc.exists()) {
+            setRole('student');
+          } else {
+            // 3. Fail-Closed: User exists in Auth, but has no database role
+            setRole(null);
+          }
         }
       } else {
         setCurrentUser(null);
