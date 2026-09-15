@@ -28,7 +28,10 @@ export default function Login() {
     setError('');
     try {
       await signInWithEmailAndPassword(auth, email, password);
-    } catch (err: any) {
+    } catch (error) {
+      // Assert the error type so TypeScript knows .code might exist
+      const err = error as Error & { code?: string };
+      
       // 3. BETTER ERROR HANDLING for brute-force lockouts
       if (err.code === 'auth/too-many-requests') {
         setError("Account temporarily locked due to many failed attempts. Please reset your password.");
@@ -52,7 +55,7 @@ export default function Login() {
     try {
       await sendPasswordResetEmail(auth, email);
       setMessage('✅ Password reset link sent! Check your inbox.');
-    } catch (err: any) {
+    } catch {
       setError('❌ Failed to send reset link. Verify your email is correct.');
     }
   };
