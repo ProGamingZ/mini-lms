@@ -1,0 +1,60 @@
+.createActivityForm { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 25px; display: flex; flex-direction: column; gap: 12px; }
+.createActivityForm input[type="text"] { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+.sectionCheckboxes { display: flex; gap: 15px; flex-wrap: wrap; }
+.sectionCheckboxes label { font-size: 14px; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+
+.activityAdminWrapper { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.activitiesList { display: flex; flex-direction: column; gap: 15px; }
+
+/* Stats Panel (Moved from ActivityCard) */
+.activityStatsPanel { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
+.activityStatsPanel h4 { font-size: 15px; margin-bottom: 10px; color: #2c3e50; }
+.sectionStatsGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.sectionStatCard { background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.statHeader { display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+.statCounter { background: #e0f2fe; color: #0369a1; font-weight: bold; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+.statActions { display: flex; gap: 6px; }
+.statActions button { flex: 1; padding: 6px 8px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; }
+.reviewBtn { background: #34495e; color: white; }
+.downloadBtn { background: #27ae60; color: white; }
+.downloadBtn:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+/* Review Modal Tabs */
+.reviewTabs { display: flex; border-bottom: 2px solid #edf2f7; margin-bottom: 10px; }
+.reviewTabs button { flex: 1; padding: 10px; background: none; border: none; font-size: 14px; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: 0.2s; }
+.reviewTabs button.active { color: #2980b9; border-bottom-color: #2980b9; }
+.reviewTabs button:hover:not(.active) { color: #34495e; }
+
+/* Submissions Review List */
+.submissionsReviewList { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.submissionRow { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8f9fa; border-radius: 4px; border: 1px solid #edf2f7; }
+.submissionBadge { background: #dcfce7; color: #15803d; font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: bold; }
+.submissionBadgeLate { background: #ffedd5; color: #c2410c; }
+.submissionBadgeMissing { background: #fee2e2; color: #b91c1c; }
+
+/* Empty State */
+.emptyState { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 20px; background: white; border-radius: 8px; border: 2px dashed #cbd5e1; text-align: center; color: #64748b; margin-top: 20px; }
+.emptyIcon { font-size: 48px; margin-bottom: 15px; opacity: 0.8; }
+.emptyState h4 { font-size: 18px; color: #334155; margin-bottom: 8px; }
+.emptyState p { font-size: 14px; max-width: 400px; }
+
+/* Dark Mode Overrides */
+:global([data-theme="dark"]) :local(.createActivityForm),
+:global([data-theme="dark"]) :local(.activityStatsPanel),
+:global([data-theme="dark"]) :local(.sectionStatCard),
+:global([data-theme="dark"]) :local(.reviewTabs),
+:global([data-theme="dark"]) :local(.submissionRow),
+:global([data-theme="dark"]) :local(.emptyState) { background: var(--bg-card); border-color: var(--border-color); }
+
+:global([data-theme="dark"]) :local(.activityStatsPanel) h4,
+:global([data-theme="dark"]) :local(.emptyState) h4 { color: var(--text-main); }
+
+:global([data-theme="dark"]) :local(.reviewTabs) button,
+:global([data-theme="dark"]) :local(.submissionRow),
+:global([data-theme="dark"]) :local(.statHeader),
+:global([data-theme="dark"]) :local(.emptyState) p { color: var(--text-muted); }
+
+:global([data-theme="dark"]) :local(.statCounter) { background: #0c4a6e; color: #7dd3fc; }
+:global([data-theme="dark"]) :local(.downloadBtn) { background: #16a34a; color: #ffffff; }
+:global([data-theme="dark"]) :local(.downloadBtn):disabled { background: #334155; color: #64748b; }
+:global([data-theme="dark"]) :local(.reviewTabs) button.active { color: #3498db; }

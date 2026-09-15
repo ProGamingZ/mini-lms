@@ -1,0 +1,31 @@
+/* Core Card Styles */
+.activityCard { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 20px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
+.activityCardHeader { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.activityCardTitle { font-size: 18px; color: #2c3e50; margin-bottom: 6px; }
+
+/* Badges & Buttons */
+.sectionBadges { display: flex; gap: 6px; margin-left: 10px; }
+.badge { background: #e0f2fe; color: #0284c7; font-size: 11px; padding: 3px 6px; border-radius: 12px; font-weight: bold; }
+.actionButtons { display: flex; gap: 10px; }
+.actionButtons button { background: transparent; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 13px; transition: 0.2s; }
+.actionButtons button:hover { background: #f1f2f6; }
+.deleteBtn { color: #e74c3c; border-color: #e74c3c; }
+.deleteBtn:hover { background: #fdf0ed; }
+
+/* Instructions */
+.activityCardBody { margin-top: 10px; }
+.activityInstructions { color: #555; white-space: pre-wrap; line-height: 1.5; font-size: 14px; }
+
+/* Modal Elements */
+.sectionCheckboxes { display: flex; gap: 15px; flex-wrap: wrap; }
+.sectionCheckboxes label { font-size: 14px; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+
+/* Dark Mode Overrides for the Card */
+:global([data-theme="dark"]) :local(.activityCard) { background: var(--bg-card); border-color: var(--border-color); }
+:global([data-theme="dark"]) :local(.activityCardTitle) { color: var(--text-main); }
+:global([data-theme="dark"]) :local(.activityInstructions) { color: var(--text-muted); }
+:global([data-theme="dark"]) :local(.badge) { background: #0c4a6e; color: #7dd3fc; }
+:global([data-theme="dark"]) :local(.actionButtons) button { color: var(--text-main); border-color: var(--border-color); }
+:global([data-theme="dark"]) :local(.actionButtons) button:hover { background: var(--border-color); }
+:global([data-theme="dark"]) :local(.deleteBtn) { color: #f87171 !important; border-color: #f87171 !important; }
+:global([data-theme="dark"]) :local(.deleteBtn):hover { background: #7f1d1d !important; }

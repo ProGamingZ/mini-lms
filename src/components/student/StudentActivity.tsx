@@ -1,5 +1,6 @@
-import { useCountdown } from '../hooks/student/useCountdown';
-import { useStudentSubmission } from '../hooks/student/useStudentSubmission';
+import { useCountdown } from '../../hooks/student/useCountdown';
+import { useStudentSubmission } from '../../hooks/student/useStudentSubmission';
+import styles from './StudentActivity.module.css';
 
 interface StudentActivityProps {
   id: string;
@@ -24,34 +25,35 @@ export default function StudentActivity({ id, title, instructions, dueDate, stud
   const formattedDueDate = dueDate ? new Date(dueDate).toLocaleDateString() : 'None';
 
   return (
-    <div className="activity-card">
-      <div className="activity-card-header">
+    <div className={styles.activityCard}>
+      <div className={styles.activityCardHeader}>
         <div>
-          <h4 className="activity-card-title">{title}</h4>
-          <div className="activity-meta">
-            <span className="due-date-text">Due: {formattedDueDate}</span>
-            <span className={`timer-badge ${isLate ? 'late' : ''}`}>
-              {timeLeft}
+          <h4 className={styles.activityCardTitle}>{title}</h4>
+          <div className={styles.activityMeta}>
+            <span className={styles.dueDateText}>Due: {formattedDueDate}</span>
+            <span className={`${styles.timerBadge} ${isLate ? styles.timerBadgeLate : ''}`}>
+              ⏱ {timeLeft}
             </span>
           </div>
         </div>
       </div>
-      <div className="activity-card-body">
-        <p className="activity-instructions">{instructions}</p>
+      
+      <div>
+        <p className={styles.activityInstructions}>{instructions}</p>
       </div>
 
-      <div className="activity-submission">
+      <div className={styles.activitySubmission}>
         {currentSubmission && (
-          <div className="current-submission-info">
+          <div className={styles.currentSubmissionInfo}>
             <span>Current Submission: <strong>{currentSubmission.fileName}</strong></span>
           </div>
         )}
 
-        <label className={`upload-btn ${isSubmitting ? 'disabled' : isLate ? 'late' : ''}`}>
-          {isSubmitting ? 'Uploading...' : currentSubmission ? 'Replace Submitted File' : isLate ? 'Submit Late' : 'Upload .js or .txt'}
+        <label className={`${styles.uploadBtn} ${isSubmitting ? styles.uploadBtnDisabled : isLate ? styles.uploadBtnLate : ''}`}>
+          {isSubmitting ? 'Uploading...' : currentSubmission ? '🔄 Replace Submitted File' : isLate ? '⬆️ Submit Late' : '⬆️ Upload .js or .txt'}
           <input type="file" accept=".js,.txt" style={{ display: 'none' }} onChange={handleUpload} disabled={isSubmitting} />
         </label>
-        {message && <p className="submission-message">{message}</p>}
+        {message && <p className={styles.submissionMessage}>{message}</p>}
       </div>
     </div>
   );

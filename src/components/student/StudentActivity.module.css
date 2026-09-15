@@ -1,0 +1,27 @@
+.activityCard { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 20px; border: 1px solid #e2e8f0; }
+.activityCardHeader { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.activityCardTitle { font-size: 18px; color: #2c3e50; margin-bottom: 6px; }
+.activityMeta { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
+.dueDateText { font-size: 13px; color: #7f8c8d; font-weight: 500; }
+
+.timerBadge { background: #fef08a; color: #854d0e; font-size: 12px; font-weight: bold; padding: 4px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px; }
+.timerBadgeLate { background: #fee2e2; color: #b91c1c; }
+
+.activityInstructions { color: #555; white-space: pre-wrap; line-height: 1.5; font-size: 14px; }
+.activitySubmission { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; }
+.currentSubmissionInfo { background: #e8f4fd; border-left: 4px solid #3498db; padding: 8px 12px; margin-bottom: 12px; font-size: 13px; color: #2c3e50; }
+
+.uploadBtn { display: inline-block; background: #27ae60; color: white; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s; }
+.uploadBtn:hover { background: #219a52; }
+.uploadBtnDisabled { background: #95a5a6; cursor: not-allowed; }
+.uploadBtnLate { background: #d35400; }
+.uploadBtnLate:hover { background: #e67e22; }
+
+.submissionMessage { margin-top: 10px; font-size: 14px; font-weight: bold; color: #2c3e50; }
+
+/* Fixed Dark Mode Overrides */
+:global([data-theme="dark"]) :local(.activityCard) { background: var(--bg-card); border-color: var(--border-color); }
+:global([data-theme="dark"]) :local(.activityCardTitle) { color: var(--text-main); }
+:global([data-theme="dark"]) :local(.activityInstructions) { color: var(--text-muted); }
+:global([data-theme="dark"]) :local(.dueDateText) { color: var(--text-muted); }
+:global([data-theme="dark"]) :local(.currentSubmissionInfo) { background: #0c4a6e; color: #e0f2fe; border-left-color: #38bdf8; }

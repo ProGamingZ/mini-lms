@@ -1,0 +1,36 @@
+.folderWrapper { margin-bottom: 8px; }
+.folderHeader { display: flex; justify-content: space-between; align-items: center; background: white; padding: 12px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 8px; transition: background 0.2s; user-select: none; }
+.folderHeader:hover { background: #e2e8f0; }
+
+.folderTitleRow { display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; }
+.folderTitle { font-size: 16px; font-weight: 500; color: #2c3e50; }
+
+.sectionBadges { display: flex; gap: 6px; margin-left: 10px; }
+.badge { background: #e0f2fe; color: #0284c7; font-size: 11px; padding: 3px 6px; border-radius: 12px; font-weight: bold; }
+
+.folderLinks { list-style: none; padding-left: 50px; margin-top: 5px; margin-bottom: 15px; }
+.folderLinks li { margin-bottom: 8px; }
+.folderLinks a { text-decoration: none; color: #2980b9; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+.folderLinks a:hover { color: #1a5276; text-decoration: underline; }
+
+.fileItem { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 8px 12px; border-radius: 4px; margin-bottom: 6px; }
+
+.actionButtons { display: flex; gap: 10px; }
+.actionButtons button { background: transparent; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 13px; transition: 0.2s; }
+.actionButtons button:hover { background: #f1f2f6; }
+.deleteBtn { color: #e74c3c; border-color: #e74c3c; }
+.deleteBtn:hover { background: #fdf0ed; }
+
+.sectionCheckboxes { display: flex; gap: 15px; flex-wrap: wrap; }
+.sectionCheckboxes label { font-size: 14px; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+
+/* Dark Mode */
+:global([data-theme="dark"]) :local(.folderHeader) { background: var(--bg-card); border-color: var(--border-color); }
+:global([data-theme="dark"]) :local(.folderTitle) { color: var(--text-main); }
+:global([data-theme="dark"]) :local(.folderLinks) a { color: var(--text-muted); }
+:global([data-theme="dark"]) :local(.fileItem) { background: var(--bg-main); border: 1px solid var(--border-color); }
+:global([data-theme="dark"]) :local(.badge) { background: #0c4a6e; color: #7dd3fc; }
+:global([data-theme="dark"]) :local(.actionButtons) button { color: var(--text-main); border-color: var(--border-color); }
+:global([data-theme="dark"]) :local(.actionButtons) button:hover { background: var(--border-color); }
+:global([data-theme="dark"]) :local(.deleteBtn) { color: #f87171 !important; border-color: #f87171 !important; }
+:global([data-theme="dark"]) :local(.deleteBtn):hover { background: #7f1d1d !important; }

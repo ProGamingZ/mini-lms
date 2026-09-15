@@ -1,0 +1,29 @@
+.modalOverlay { 
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+  background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; 
+  align-items: center; z-index: 1000; 
+}
+
+.modalContent { 
+  background: white; padding: 25px; border-radius: 8px; width: 90%; 
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; 
+}
+
+.modalHeader { 
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; 
+}
+.modalHeader h3 { margin: 0; font-size: 20px; color: #2c3e50; }
+
+.closeModal { 
+  background: none; border: none; font-size: 24px; cursor: pointer; color: #7f8c8d; 
+}
+.closeModal:hover { color: #2c3e50; }
+
+/* Fixed Dark Mode Overrides */
+:global([data-theme="dark"]) :local(.modalContent) { 
+  background: var(--bg-card); 
+  border-color: var(--border-color); 
+}
+:global([data-theme="dark"]) :local(.modalHeader) h3 { 
+  color: var(--text-main); 
+}

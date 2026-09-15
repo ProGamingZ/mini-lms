@@ -5,7 +5,7 @@
   --text-main: #333333;
   --text-muted: #666666;
   --border-color: #e2e8f0;
-  --header-bg: #ffffff; /* Changed to solid white */
+  --header-bg: #ffffff;
 }
 
 /* Dark Mode Overrides */
@@ -15,7 +15,7 @@
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --border-color: #334155;
-  --header-bg: #1e293b; /* Changed to solid dark slate */
+  --header-bg: #1e293b;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
@@ -31,186 +31,44 @@ body { background-color: var(--bg-main); color: var(--text-main); transition: ba
 
 /* Dashboard Layout & Collapsible Sidebar */
 .dashboard-container { display: flex; min-height: 100vh; background: var(--bg-main); width: 100%; transition: background 0.3s; }
-.sidebar {
-  background: #2c3e50;
-  color: white;
-  padding: 20px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  transition: width 0.25s ease, padding 0.25s ease;
-  overflow-y: auto;
-  white-space: nowrap;
-  height: 100vh; /* Forces sidebar to exactly screen height */
-  position: sticky; /* Locks it in place */
-  top: 0;
-}
-/* Ensure the logout button shrinks properly but stays at bottom */
+.sidebar { background: #2c3e50; color: white; padding: 20px 10px; display: flex; flex-direction: column; gap: 10px; transition: width 0.25s ease, padding 0.25s ease; overflow-y: auto; white-space: nowrap; height: 100vh; position: sticky; top: 0; }
 .sidebar .logout-btn { margin-top: auto; background: #e74c3c; text-align: center; flex-shrink: 0; }
 .sidebar.open { width: 180px; }
 .sidebar.closed { width: 65px; align-items: center; }
 
-.sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  width: 100%;
-}
+.sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; width: 100%; }
 .sidebar-header h2 { font-size: 18px; margin: 0; }
-.toggle-sidebar-btn {
-  background: #34495e;
-  border: none;
-  color: white;
-  padding: 6px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-}
+.toggle-sidebar-btn { background: #34495e; border: none; color: white; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
 .toggle-sidebar-btn:hover { background: #415b76; }
 
 .sidebar-nav { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-.sidebar button {
-  padding: 12px;
-  background: transparent;
-  color: white;
-  border: none;
-  text-align: left;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 15px;
-  transition: 0.2s;
-  width: 100%;
-}
+.sidebar button { padding: 12px; background: transparent; color: white; border: none; text-align: left; cursor: pointer; border-radius: 4px; font-size: 15px; transition: 0.2s; width: 100%; }
 .sidebar.closed button { text-align: center; padding: 12px 0; }
 .sidebar button:hover, .sidebar button.active { background: #34495e; }
 .sidebar .logout-btn { margin-top: auto; background: #e74c3c; text-align: center; }
 .sidebar .logout-btn:hover { background: #c0392b; }
 
-.main-content { 
-  flex: 1; 
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+.main-content { flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
 .main-content h3 { font-size: 28px; margin-bottom: 10px; color: var(--text-main); }
 .main-content p { color: var(--text-muted); }
+.content-wrapper { padding: 30px 40px; flex: 1; }
 
-/* The new wrapper you added inside main-content */
-.content-wrapper {
-  padding: 30px 40px;
-  flex: 1; /* Pushes the footer down automatically */
-}
-
-/* Folder Component */
-.folder-wrapper { margin-bottom: 8px; }
-.folder-header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 12px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 8px; transition: background 0.2s; user-select: none; }
-.folder-header:hover { background: #e2e8f0; }
-.folder-title-row { display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; }
-.folder-title { font-size: 16px; font-weight: 500; color: #2c3e50; }
-.section-badges { display: flex; gap: 6px; margin-left: 10px; }
-.badge { background: #e0f2fe; color: #0284c7; font-size: 11px; padding: 3px 6px; border-radius: 12px; font-weight: bold; }
-
-/* Link Layout */
-.folder-links { list-style: none; padding-left: 50px; margin-top: 5px; margin-bottom: 15px; }
-.folder-links li { margin-bottom: 8px; }
-.folder-links a { text-decoration: none; color: #2980b9; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
-.folder-links a:hover { color: #1a5276; text-decoration: underline; }
+/* Global Buttons */
 .add-file-btn { background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-bottom: 10px; font-size: 13px; }
-.file-item { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 8px 12px; border-radius: 4px; margin-bottom: 6px; }
-
-/* Create Folder Form */
-.create-folder-form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 25px; display: flex; flex-direction: column; gap: 12px; }
-.create-folder-form input[type="text"] { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
-.section-checkboxes { display: flex; gap: 15px; flex-wrap: wrap; }
-.section-checkboxes label { font-size: 14px; display: flex; align-items: center; gap: 5px; cursor: pointer; }
-.create-folder-form button { padding: 10px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; width: fit-content; }
-
-/* Unified Action Buttons for Folders and Files */
-.action-buttons { display: flex; gap: 10px; }
-.action-buttons button { background: transparent; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 13px; transition: 0.2s; }
-.action-buttons button:hover { background: #f1f2f6; }
-.action-buttons .delete-btn { color: #e74c3c; border-color: #e74c3c; }
-.action-buttons .delete-btn:hover { background: #fdf0ed; }
+.add-file-btn:hover { background: #2980b9; }
 
 /* Modal Styles */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-.modal-content { 
-  background: white; 
-  padding: 25px; 
-  border-radius: 8px; 
-  width: 90%; 
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
-  max-height: 90vh; /* Limits height to 90% of the screen */
-  overflow-y: auto; /* Enables mouse wheel and touchpad scrolling */
-}
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.modal-header h3 { margin: 0; font-size: 20px; color: #2c3e50; }
-.close-modal { background: none; border: none; font-size: 24px; cursor: pointer; color: #7f8c8d; }
-.close-modal:hover { color: #2c3e50; }
 .modal-form { display: flex; flex-direction: column; gap: 15px; }
-/* Apply consistent styling across ALL input types */
-.modal-form input[type="text"], 
-.modal-form input[type="url"], 
-.modal-form input[type="email"], 
-.modal-form input[type="password"] { 
-  padding: 12px; 
-  border: 1px solid #ccc; 
-  border-radius: 4px; 
-  font-size: 16px; 
-  width: 100%; 
-  box-sizing: border-box; 
-}
-
-/* Professional Password Show/Hide UI */
-.password-wrapper { 
-  position: relative; 
-  display: flex; 
-  align-items: center; 
-  width: 100%; 
-}
-.password-wrapper input { 
-  width: 100%; 
-  padding-right: 60px !important; 
-}
-.toggle-password { 
-  position: absolute; 
-  right: 12px; 
-  top: 50%; 
-  transform: translateY(-50%); 
-  background: transparent; 
-  border: none; 
-  font-size: 13px; 
-  color: #3498db; 
-  cursor: pointer; 
-  font-weight: bold; 
-  padding: 0; 
-}
-.toggle-password:hover { 
-  color: #2980b9; 
-}
+.modal-form input[type="text"], .modal-form input[type="url"], .modal-form input[type="email"], .modal-form input[type="password"] { padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; width: 100%; box-sizing: border-box; }
+.password-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
+.password-wrapper input { width: 100%; padding-right: 60px !important; }
+.toggle-password { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: transparent; border: none; font-size: 13px; color: #3498db; cursor: pointer; font-weight: bold; padding: 0; }
+.toggle-password:hover { color: #2980b9; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 .modal-actions button { padding: 10px 15px; border-radius: 4px; border: none; cursor: pointer; font-size: 14px; }
-.modal-actions .delete-btn { background: #e74c3c; color: white; }
 .save-btn { background: #3498db; color: white; padding: 12px; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; }
 .save-btn:hover { background: #2980b9; }
-
-/* Activity Cards */
-.activities-list { display: flex; flex-direction: column; gap: 15px; }
-.activity-card { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 20px; border: 1px solid #e2e8f0; }
-.activity-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-.activity-card-title { font-size: 18px; color: #2c3e50; margin-bottom: 6px; }
-.activity-instructions { color: #555; white-space: pre-wrap; line-height: 1.5; font-size: 14px; }
-
-/* Textareas in modals */
 .modal-form textarea { padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; width: 100%; box-sizing: border-box; resize: vertical; font-family: sans-serif; }
-
-/* Student Activity UI */
-.activity-submission { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; }
-.upload-btn { display: inline-block; background: #27ae60; color: white; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s; }
-.upload-btn:hover { background: #219a52; }
-.upload-btn.disabled { background: #95a5a6; cursor: not-allowed; }
-.submission-message { margin-top: 10px; font-size: 14px; font-weight: bold; color: #2c3e50; }
 
 /* Student Info Panel */
 .student-info-panel { margin-bottom: 25px; text-align: center; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 6px; }
@@ -219,257 +77,48 @@ body { background-color: var(--bg-main); color: var(--text-main); transition: ba
 .student-email { font-size: 12px; color: #ecf0f1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; text-align: left; }
 .edit-email-btn { background: #3498db !important; color: white !important; font-size: 11px !important; padding: 4px 8px !important; width: auto !important; border-radius: 4px; cursor: pointer; }
 .edit-email-btn:hover { background: #2980b9 !important; }
-
-/* Student Single Submission Info */
-.current-submission-info { background: #e8f4fd; border-left: 4px solid #3498db; padding: 8px 12px; margin-bottom: 12px; font-size: 13px; color: #2c3e50; }
-
-/* Admin Stats Panel */
-.activity-admin-wrapper { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-.activity-stats-panel { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
-.activity-stats-panel h4 { font-size: 15px; margin-bottom: 10px; color: #2c3e50; }
-.section-stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
-.section-stat-card { background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-.stat-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
-.stat-counter { background: #e0f2fe; color: #0369a1; font-weight: bold; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
-.stat-actions { display: flex; gap: 6px; }
-.stat-actions button { flex: 1; padding: 6px 8px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; }
-.review-btn { background: #34495e; color: white; }
-.download-btn { background: #27ae60; color: white; }
-.download-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
-
-/* Submissions Review Modal List */
-.submissions-review-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-.submission-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8f9fa; border-radius: 4px; border: 1px solid #edf2f7; }
-.submission-badge { background: #dcfce7; color: #15803d; font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: bold; }
-
-/* Review Modal Tabs */
-.review-tabs { display: flex; border-bottom: 2px solid #edf2f7; margin-bottom: 10px; }
-.review-tabs button { flex: 1; padding: 10px; background: none; border: none; font-size: 14px; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: 0.2s; }
-.review-tabs button.active { color: #2980b9; border-bottom-color: #2980b9; }
-.review-tabs button:hover:not(.active) { color: #34495e; }
-
-/* Enhanced Badges */
-.submission-badge.late { background: #ffedd5; color: #c2410c; }
-.submission-badge.missing { background: #fee2e2; color: #b91c1c; }
-
-/* Student Sidebar UI Additions */
 .change-password-btn { background: rgba(255, 255, 255, 0.1) !important; color: #ecf0f1 !important; width: 100% !important; margin-top: 10px; font-size: 13px !important; text-align: center !important; padding: 8px !important; border-radius: 4px; transition: 0.2s; }
 .change-password-btn:hover { background: rgba(255, 255, 255, 0.2) !important; }
 
-/* Dashboard Empty States */
-.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 20px; background: white; border-radius: 8px; border: 2px dashed #cbd5e1; text-align: center; color: #64748b; margin-top: 20px; }
-.empty-icon { font-size: 48px; margin-bottom: 15px; opacity: 0.8; }
-.empty-state h4 { font-size: 18px; color: #334155; margin-bottom: 8px; }
-.empty-state p { font-size: 14px; max-width: 400px; }
-
-/* Student Activity Meta (Timer & Date) */
-.activity-meta { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
-.due-date-text { font-size: 13px; color: #7f8c8d; font-weight: 500; }
-.timer-badge { background: #fef08a; color: #854d0e; font-size: 12px; font-weight: bold; padding: 4px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px; }
-.timer-badge.late { background: #fee2e2; color: #b91c1c; }
-
-/* Upload Button late state */
-.upload-btn.late { background: #d35400; }
-.upload-btn.late:hover { background: #e67e22; }
-
-/* Rubric Button & Responsive Scrolling Table for Mobile */
+/* Rubric Button & Responsive Scrolling Table */
 .view-rubric-btn { background: #f8fafc; color: #334155; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; }
 .view-rubric-btn:hover { background: #e2e8f0; }
-
-.table-responsive { 
-  width: 100%; 
-  margin-top: 10px; 
-  border-radius: 6px; 
-  border: 1px solid #e2e8f0; 
-  overflow: hidden;
-}
-.rubric-table { 
-  width: 100%; 
-  border-collapse: collapse; 
-  font-size: 13px; 
-  line-height: 1.5; 
-}
-.rubric-table th, .rubric-table td { 
-  border: 1px solid #e2e8f0; 
-  padding: 15px; 
-  text-align: left; 
-  vertical-align: top;
-}
-.rubric-table th { 
-  background: #f8fafc; 
-  color: #334155; 
-  font-weight: bold; 
-}
+.table-responsive { width: 100%; margin-top: 10px; border-radius: 6px; border: 1px solid #e2e8f0; overflow: hidden; }
+.rubric-table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.5; }
+.rubric-table th, .rubric-table td { border: 1px solid #e2e8f0; padding: 15px; text-align: left; vertical-align: top; }
+.rubric-table th { background: #f8fafc; color: #334155; font-weight: bold; }
 
 /* Header and Footer */
-.sticky-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: var(--header-bg);
-  backdrop-filter: blur(8px);
-  padding: 15px 40px; /* Aligns with content-wrapper padding */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--border-color);
-  margin: 0; /* Removed negative margins */
-}
-
+.sticky-header { position: sticky; top: 0; z-index: 50; background: var(--header-bg); backdrop-filter: blur(8px); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); margin: 0; }
 .header-title { font-size: 18px; margin: 0; color: var(--text-main); }
-
-.theme-toggle-btn {
-  background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
-  padding: 8px 15px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: bold;
-  transition: 0.2s;
-}
+.theme-toggle-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; }
 .theme-toggle-btn:hover { background: var(--border-color); }
-
-.app-footer {
-  margin-top: auto; /* Forces footer to the absolute bottom */
-  padding: 20px 40px;
-  border-top: 1px solid var(--border-color);
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 13px;
-  background: var(--bg-main);
-}
+.app-footer { margin-top: auto; padding: 20px 40px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 13px; background: var(--bg-main); }
 .app-footer a { color: #3498db; text-decoration: none; }
 
-/* Deep Component Backgrounds for Dark Mode */
-[data-theme="dark"] .activity-card, 
-[data-theme="dark"] .create-folder-form, 
-[data-theme="dark"] .modal-content, 
-[data-theme="dark"] .folder-header,
-[data-theme="dark"] .activity-stats-panel,
-[data-theme="dark"] .empty-state,
-[data-theme="dark"] .section-stat-card,
-[data-theme="dark"] .submission-row,
+/* Fixed Deep Component Styles for Dark Mode */
 [data-theme="dark"] .rubric-table th,
-[data-theme="dark"] .rubric-table td,
-[data-theme="dark"] .review-tabs{  /* Added login-box here */
-  background: var(--bg-card); 
-  border-color: var(--border-color); 
-}
-
-/* Deep Text Color Overrides for Dark Mode */
-[data-theme="dark"] h4,
-[data-theme="dark"] .activity-card-title, 
-[data-theme="dark"] .folder-title,
-[data-theme="dark"] .empty-state h4,
-[data-theme="dark"] .activity-stats-panel h4{ 
-  color: var(--text-main); 
-}
-
-[data-theme="dark"] .activity-instructions,
-[data-theme="dark"] .empty-state p,
-[data-theme="dark"] .stat-header,
-[data-theme="dark"] .due-date-text,
-[data-theme="dark"] .review-tabs button,
-[data-theme="dark"] .folder-links a,
-[data-theme="dark"] .submission-row {
-  color: var(--text-muted);
-}
-
-[data-theme="dark"] .review-tabs button.active { color: #3498db; }
-[data-theme="dark"] .file-item { background: var(--bg-main); border: 1px solid var(--border-color); }
-[data-theme="dark"] .current-submission-info { background: #0c4a6e; color: #e0f2fe; border-left-color: #38bdf8; }
-
-/* Dark Mode Component Overrides */
-[data-theme="dark"] .action-buttons button {
+[data-theme="dark"] .rubric-table td {
+  background: var(--bg-card);
   color: var(--text-main);
   border-color: var(--border-color);
 }
-[data-theme="dark"] .action-buttons button:hover {
-  background: var(--border-color);
-}
-[data-theme="dark"] .action-buttons .delete-btn {
-  color: #f87171; /* Brighter red for visibility */
-  border-color: #f87171;
-}
-[data-theme="dark"] .action-buttons .delete-btn:hover {
-  background: #7f1d1d; /* Dark red background on hover */
-}
+[data-theme="dark"] h4 { color: var(--text-main); }
+[data-theme="dark"] .save-btn { background: #0ea5e9; color: #ffffff; }
+[data-theme="dark"] .add-file-btn:hover, [data-theme="dark"] .save-btn:hover { background: #0284c7; }
 
-/* Fix Badges and Counters in Dark Mode */
-[data-theme="dark"] .badge,
-[data-theme="dark"] .stat-counter {
-  background: #0c4a6e; /* Deep ocean blue */
-  color: #7dd3fc; /* Light sky blue text */
-}
-
-/* Fix Add/Create Buttons in Dark Mode */
-[data-theme="dark"] .add-file-btn,
-[data-theme="dark"] .save-btn {
-  background: #0ea5e9; /* Slightly brighter blue */
-  color: #ffffff;
-}
-[data-theme="dark"] .add-file-btn:hover,
-[data-theme="dark"] .save-btn:hover {
-  background: #0284c7;
-}
-
-/* Fix ZIP Button Active/Inactive States in Dark Mode */
-[data-theme="dark"] .download-btn { 
-  background: #16a34a; /* Vibrant green */
-  color: #ffffff;
-}
-[data-theme="dark"] .download-btn:disabled { 
-  background: #334155; /* Slate gray */
-  color: #64748b; /* Muted text */
-}
-
-
-/* --- Mobile Responsiveness (Sidebar, Layout, & Rubric) --- */
+/* --- Mobile Responsiveness --- */
 @media (max-width: 768px) {
-  /* 1. Sidebar & Main Layout Fixes (Overlays the screen) */
-  .sidebar { 
-    position: fixed; 
-    height: 100vh; 
-    z-index: 1000; 
-    box-shadow: 2px 0 10px rgba(0,0,0,0.2); 
-    left: 0;
-    top: 0;
-  }
+  .sidebar { position: fixed; height: 100vh; z-index: 1000; box-shadow: 2px 0 10px rgba(0,0,0,0.2); left: 0; top: 0; }
   .sidebar.closed { width: 60px; padding: 20px 5px; }
   .sidebar.open { width: 250px; }
-  
-  .main-content { 
-    margin-left: 60px; 
-    width: calc(100% - 60px); 
-    max-width: calc(100vw - 60px); 
-    overflow-x: hidden;
-  }
+  .main-content { margin-left: 60px; width: calc(100% - 60px); max-width: calc(100vw - 60px); overflow-x: hidden; }
   .content-wrapper { padding: 15px; }
   .sticky-header { padding: 15px; }
   .app-footer { padding: 15px; }
   .main-content h3 { font-size: 22px; margin-left: 15px; margin-top: 15px; }
-
-  /* Stack layout elements vertically */
-  .activity-card-header { flex-direction: column; gap: 15px; align-items: flex-start; }
-  .action-buttons { width: 100%; display: flex; flex-direction: column; gap: 8px; }
-  .action-buttons button { width: 100%; text-align: center; justify-content: center; margin-left: 0; }
-  
-  .modal-content { width: 95%; padding: 20px 15px; }
-  .modal-header h3 { font-size: 18px; }
   .modal-actions { flex-direction: column; gap: 8px; }
   .modal-actions button { width: 100%; }
-
-  .section-stats-grid { grid-template-columns: 1fr; }
-  .stat-header { flex-direction: column; align-items: flex-start; gap: 8px; }
-  .upload-btn { width: 100%; text-align: center; }
-  
-  .create-folder-form { padding: 15px; }
-  .section-checkboxes { flex-direction: column; gap: 10px; }
-  .folder-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-
-  /* 2. Mobile Card Transformation for Rubric */
   .table-responsive { border: none; background: transparent; }
   .rubric-table thead { display: none; }
   .rubric-table, .rubric-table tbody, .rubric-table tr, .rubric-table td { display: block; width: 100%; }
