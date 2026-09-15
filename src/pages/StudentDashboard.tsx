@@ -6,6 +6,8 @@ import { doc, getDoc, collection, query, where, onSnapshot } from 'firebase/fire
 import StudentFolder from '../components/StudentFolder';
 import StudentActivity from '../components/StudentActivity';
 import Modal from '../components/Modal';
+import { useTheme } from '../hooks/common/useTheme';
+
 
 export default function StudentDashboard() {
   const [studentData, setStudentData] = useState<any>(null);
@@ -33,20 +35,7 @@ export default function StudentDashboard() {
 
   const navigate = useNavigate();
 
-  // Safely initialize state from localStorage or the current active DOM theme
-  const [theme, setTheme] = useState(
-    localStorage.getItem('theme') || document.documentElement.getAttribute('data-theme') || 'light'
-  );
-
-  // Automatically sync the DOM and localStorage whenever the theme state changes
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
-  };
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const fetchStudentData = async () => {
