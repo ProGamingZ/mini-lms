@@ -12,6 +12,7 @@ export default function AdminActivities() {
   // 2. Destructure the hook
   const { activities, students, submissions, createActivity, editActivity, deleteActivity } = useAdminActivities();
   
+  
   // UI State
   const [isCreatingActivity, setIsCreatingActivity] = useState(false);
   const [activityTitle, setActivityTitle] = useState('');
@@ -107,7 +108,7 @@ export default function AdminActivities() {
       <div className="activities-list">
         {activities.map(activity => (
           <div key={activity.id} className="activity-admin-wrapper">
-            <ActivityCard {...activity} allSections={SECTIONS} onDeleteActivity={handleDeleteActivity} onEditActivity={handleEditActivity} />
+            <ActivityCard {...activity} allSections={SECTIONS} onDeleteActivity={deleteActivity} onEditActivity={editActivity} />
             
             <div className="activity-stats-panel">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
