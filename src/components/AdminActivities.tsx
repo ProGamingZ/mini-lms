@@ -1,57 +1,25 @@
-import { useState, useEffect } from 'react';
-import { db } from '../config/firebase';
-import {
-  collection,
-  addDoc,
-  onSnapshot,
-  doc,
-  updateDoc,
-  deleteDoc,
-  query,
-  orderBy
-} from 'firebase/firestore';
+import { useState } from 'react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import ActivityCard from './ActivityCard';
 import Modal from './Modal';
+// 1. Import the hook
+import { useAdminActivities } from '../hooks/admin/useAdminActivities';
 
 const SECTIONS = ["BSCS_3A", "BSCS_3B", "BSCS_3C", "BSIT_3A", "BSIT_3C"];
 
 export default function AdminActivities() {
-  const [activities, setActivities] = useState<any[]>([]);
-  const [students, setStudents] = useState<any[]>([]);
-  const [submissions, setSubmissions] = useState<any[]>([]);
+  // 2. Destructure the hook
+  const { activities, students, submissions, createActivity, editActivity, deleteActivity } = useAdminActivities();
   
+  // UI State
   const [isCreatingActivity, setIsCreatingActivity] = useState(false);
   const [activityTitle, setActivityTitle] = useState('');
   const [activityInstructions, setActivityInstructions] = useState('');
   const [activityDueDate, setActivityDueDate] = useState(''); 
   const [selectedActivitySections, setSelectedActivitySections] = useState<string[]>([]);
-  
   const [selectedActivityForReview, setSelectedActivityForReview] = useState<any | null>(null);
   const [reviewTab, setReviewTab] = useState<'submitted' | 'missing'>('submitted');
-
-  useEffect(() => {
-    const q = query(collection(db, 'activities'), orderBy('createdAt', 'desc'));
-    const unsub = onSnapshot(q, (snapshot) => {
-      setActivities(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-    });
-    return () => unsub();
-  }, []);
-
-  useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'users'), (snapshot) => {
-      setStudents(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-    });
-    return () => unsub();
-  }, []);
-
-  useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'submissions'), (snapshot) => {
-      setSubmissions(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-    });
-    return () => unsub();
-  }, []);
 
   const toggleActivitySection = (section: string) => {
     setSelectedActivitySections(prev =>
@@ -65,13 +33,8 @@ export default function AdminActivities() {
       return alert("Title, instructions, and at least one section are required.");
     }
 
-    await addDoc(collection(db, 'activities'), {
-      title: activityTitle,
-      instructions: activityInstructions,
-      targetSections: selectedActivitySections,
-      dueDate: activityDueDate || null,
-      createdAt: new Date()
-    });
+    // 3. Call the hook function
+    await createActivity(activityTitle, activityInstructions, selectedActivitySections, activityDueDate);
 
     setActivityTitle('');
     setActivityInstructions('');
@@ -80,20 +43,7 @@ export default function AdminActivities() {
     setIsCreatingActivity(false);
   };
 
-  // Updated to include Due Date
-  const handleEditActivity = async (id: string, newTitle: string, newInstructions: string, newSections: string[], newDueDate: string) => {
-    await updateDoc(doc(db, 'activities', id), {
-      title: newTitle,
-      instructions: newInstructions,
-      targetSections: newSections,
-      dueDate: newDueDate || null
-    });
-  };
-
-  const handleDeleteActivity = async (id: string) => {
-    await deleteDoc(doc(db, 'activities', id));
-  };
-
+  // ZIP logic remains in the component because it manipulates the UI (file downloads)
   const downloadSectionSubmissions = async (activityId: string, activityName: string, section: string) => {
     const sectionSubmissions = submissions.filter(s => s.activityId === activityId && s.section === section);
     if (sectionSubmissions.length === 0) return alert(`No submissions found for ${section}.`);

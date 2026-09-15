@@ -1,32 +1,18 @@
-import { useState, useEffect } from 'react';
-import { db } from '../config/firebase';
-import {
-  collection,
-  addDoc,
-  onSnapshot,
-  doc,
-  updateDoc,
-  deleteDoc,
-  query,
-  orderBy
-} from 'firebase/firestore';
+import { useState } from 'react';
 import Folder from './Folder';
+// 1. Import the new hook
+import { useAdminFolders } from '../hooks/admin/useAdminFolders';
 
 const SECTIONS = ["BSCS_3A", "BSCS_3B", "BSCS_3C", "BSIT_3A", "BSIT_3C"];
 
 export default function AdminLessons() {
-  const [folders, setFolders] = useState<any[]>([]);
+  // 2. Destructure exactly what you need from the hook
+  const { folders, createFolder, editFolder, deleteFolder, addFile, editFile, deleteFile } = useAdminFolders();
+  
+  // UI State remains in the component
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [selectedFolderSections, setSelectedFolderSections] = useState<string[]>([]);
-
-  useEffect(() => {
-    const q = query(collection(db, 'folders'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setFolders(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
-    return () => unsubscribe();
-  }, []);
 
   const toggleFolderSection = (section: string) => {
     setSelectedFolderSections(prev =>
@@ -39,44 +25,13 @@ export default function AdminLessons() {
     if (!newFolderName.trim() || selectedFolderSections.length === 0) {
       return alert("Enter a name and select at least one section.");
     }
-    await addDoc(collection(db, 'folders'), {
-      title: newFolderName,
-      targetSections: selectedFolderSections,
-      links: [],
-      createdAt: new Date()
-    });
+    
+    // 3. Call the hook function
+    await createFolder(newFolderName, selectedFolderSections);
+    
     setNewFolderName('');
     setSelectedFolderSections([]);
     setIsCreatingFolder(false);
-  };
-
-  const editFolder = async (id: string, newTitle: string, newSections: string[]) => {
-    await updateDoc(doc(db, 'folders', id), { title: newTitle, targetSections: newSections });
-  };
-
-  const deleteFolder = async (id: string) => {
-    await deleteDoc(doc(db, 'folders', id));
-  };
-
-  const addFile = async (folderId: string, label: string, url: string) => {
-    const folder = folders.find(f => f.id === folderId);
-    const currentLinks = folder?.links || [];
-    const newLinks = [...currentLinks, { id: Date.now().toString(), label, url }];
-    await updateDoc(doc(db, 'folders', folderId), { links: newLinks });
-  };
-
-  const editFile = async (folderId: string, fileId: string, newLabel: string, newUrl: string) => {
-    const folder = folders.find(f => f.id === folderId);
-    const newLinks = folder.links.map((link: any) =>
-      link.id === fileId ? { ...link, label: newLabel, url: newUrl } : link
-    );
-    await updateDoc(doc(db, 'folders', folderId), { links: newLinks });
-  };
-
-  const deleteFile = async (folderId: string, fileId: string) => {
-    const folder = folders.find(f => f.id === folderId);
-    const newLinks = folder.links.filter((link: any) => link.id !== fileId);
-    await updateDoc(doc(db, 'folders', folderId), { links: newLinks });
   };
 
   return (
