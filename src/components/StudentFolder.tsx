@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 interface Link { id: string; label: string; url: string; }
-interface StudentFolderProps { title: string; links: Link[]; }
+interface StudentFolderProps { title: string; links?: Link[]; }
 
 export default function StudentFolder({ title, links }: StudentFolderProps) {
   const [isOpen, setIsOpen] = useState(false);

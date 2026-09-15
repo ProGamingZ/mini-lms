@@ -1,23 +1,24 @@
 import { useState, useEffect } from 'react';
-import { auth, db } from '../config/firebase';
+import { auth } from '../config/firebase';
 import { signOut, verifyBeforeUpdateEmail, updatePassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { doc, getDoc, collection, query, where, onSnapshot } from 'firebase/firestore';
 import StudentFolder from '../components/StudentFolder';
 import StudentActivity from '../components/StudentActivity';
 import Modal from '../components/Modal';
 import { useTheme } from '../hooks/common/useTheme';
-
+import { useStudentData } from '../hooks/student/useStudentData';
 
 export default function StudentDashboard() {
-  const [studentData, setStudentData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
   
+  // 1. Inject the data hook
+  const { studentData, folders, activities, loading } = useStudentData();
+  
+  // 2. Keep the UI states for modals and tabs
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
   const [activeTab, setActiveTab] = useState<'lessons' | 'activities'>('lessons');
   const [activitySubTab, setActivitySubTab] = useState<'ongoing' | 'pastDue'>('ongoing');
-  const [folders, setFolders] = useState<any[]>([]);
-  const [activities, setActivities] = useState<any[]>([]);
   
   const [isEditEmailModalOpen, setIsEditEmailModalOpen] = useState(false);
   const [newEmail, setNewEmail] = useState('');
@@ -29,45 +30,15 @@ export default function StudentDashboard() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
-
   const [showPassword, setShowPassword] = useState(false);
+  
   const [isRubricModalOpen, setIsRubricModalOpen] = useState(false);
 
-  const navigate = useNavigate();
-
-  const { theme, toggleTheme } = useTheme();
-
   useEffect(() => {
-    const fetchStudentData = async () => {
-      const user = auth.currentUser;
-      if (!user) return navigate('/login');
-
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      if (userDoc.exists()) {
-        const data = userDoc.data();
-        setStudentData(data);
-        const section = data.section;
-
-        const qFolders = query(collection(db, 'folders'), where('targetSections', 'array-contains', section));
-        onSnapshot(qFolders, (snapshot) => {
-          setFolders(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-        });
-
-        const qActivities = query(collection(db, 'activities'), where('targetSections', 'array-contains', section));
-        onSnapshot(qActivities, (snapshot) => {
-          setActivities(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-        });
-      }
-      setLoading(false);
-    };
-    fetchStudentData();
-
-    // Auto-collapse sidebar on mobile resize
     const handleResize = () => setIsSidebarOpen(window.innerWidth > 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [navigate]);
-
+  }, []);
   const handleLogout = async () => {
     await signOut(auth);
     localStorage.removeItem('theme'); // Clear theme token
@@ -85,7 +56,8 @@ export default function StudentDashboard() {
         setEmailMessage('✅ Verification link sent! Check your new inbox and click the link to confirm. Your email will be updated on your next login.');
         setNewEmail('');
       }
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as Error;
       setEmailMessage('❌ Error: ' + err.message);
     } finally {
       setIsSending(false);
@@ -107,7 +79,9 @@ export default function StudentDashboard() {
         setNewPassword('');
         setConfirmPassword('');
       }
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as Error & { code?: string };
+      
       if (err.code === 'auth/requires-recent-login') {
         setPasswordMessage('❌ Please log out and log back in before changing your password.');
       } else {
