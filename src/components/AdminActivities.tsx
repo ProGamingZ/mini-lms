@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
+import { downloadSubmissionsZip } from '../utils/zipGenerator';
 import ActivityCard from './ActivityCard';
 import Modal from './Modal';
 import { Timestamp } from 'firebase/firestore';
@@ -56,18 +55,10 @@ export default function AdminActivities() {
 
   // ZIP logic remains in the component because it manipulates the UI (file downloads)
   const downloadSectionSubmissions = async (activityId: string, activityName: string, section: string) => {
+    // 1. Filter the data
     const sectionSubmissions = submissions.filter(s => s.activityId === activityId && s.section === section);
-    if (sectionSubmissions.length === 0) return alert(`No submissions found for ${section}.`);
-
-    const zip = new JSZip();
-    sectionSubmissions.forEach(sub => {
-      const cleanStudentName = (sub.studentName || 'Student').replace(/[^a-zA-Z0-9_-]/g, '_');
-      const zipFileName = `${cleanStudentName}_${sub.fileName}`;
-      zip.file(zipFileName, sub.code);
-    });
-
-    const content = await zip.generateAsync({ type: 'blob' });
-    saveAs(content, `${activityName}_${section}_Submissions.zip`);
+    // 2. Pass it to the utility function to handle the heavy lifting
+    await downloadSubmissionsZip(sectionSubmissions, activityName, section);
   };
 
   const formatTimestamp = (timestamp: Timestamp | null) => {
