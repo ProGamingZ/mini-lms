@@ -2,14 +2,27 @@ import { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 
+export interface FolderLink {
+  id: string;
+  label: string;
+  url: string;
+}
+
+export interface AdminFolderData {
+  id: string;
+  title: string;
+  targetSections: string[];
+  links?: FolderLink[];
+}
+
 export function useAdminFolders() {
-  const [folders, setFolders] = useState<any[]>([]);
+  const [folders, setFolders] = useState<AdminFolderData[]>([]);
 
   // 1. Fetch Folders
   useEffect(() => {
     const q = query(collection(db, 'folders'), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      setFolders(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setFolders(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AdminFolderData)));
     });
     return () => unsubscribe();
   }, []);
@@ -42,8 +55,8 @@ export function useAdminFolders() {
 
   const editFile = async (folderId: string, fileId: string, newLabel: string, newUrl: string) => {
     const folder = folders.find(f => f.id === folderId);
-    if (!folder) return;
-    const newLinks = folder.links.map((link: any) =>
+    if (!folder || !folder.links) return;
+    const newLinks = folder.links.map((link: FolderLink) =>
       link.id === fileId ? { ...link, label: newLabel, url: newUrl } : link
     );
     await updateDoc(doc(db, 'folders', folderId), { links: newLinks });
@@ -51,8 +64,8 @@ export function useAdminFolders() {
 
   const deleteFile = async (folderId: string, fileId: string) => {
     const folder = folders.find(f => f.id === folderId);
-    if (!folder) return;
-    const newLinks = folder.links.filter((link: any) => link.id !== fileId);
+    if (!folder || !folder.links) return;
+    const newLinks = folder.links.filter((link: FolderLink) => link.id !== fileId);
     await updateDoc(doc(db, 'folders', folderId), { links: newLinks });
   };
 

@@ -3,7 +3,7 @@ import Modal from './Modal';
 
 interface Link { id: string; label: string; url: string; }
 interface FolderProps {
-  id: string; title: string; targetSections: string[]; links: Link[];
+  id: string; title: string; targetSections: string[]; links?: Link[];
   allSections: string[];
   onDeleteFolder: (id: string) => void;
   onEditFolder: (id: string, newTitle: string, newSections: string[]) => void;

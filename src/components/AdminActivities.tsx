@@ -3,15 +3,25 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import ActivityCard from './ActivityCard';
 import Modal from './Modal';
-// 1. Import the hook
-import { useAdminActivities } from '../hooks/admin/useAdminActivities';
+import { Timestamp } from 'firebase/firestore';
+import { 
+  useAdminActivities, 
+  type AdminActivityData, 
+  type StudentUser, 
+  type AdminSubmissionData 
+} from '../hooks/admin/useAdminActivities';
 
 const SECTIONS = ["BSCS_3A", "BSCS_3B", "BSCS_3C", "BSIT_3A", "BSIT_3C"];
 
+interface ReviewState {
+  activity: AdminActivityData;
+  section: string;
+  sectionSubmissions: AdminSubmissionData[];
+  missingStudents: StudentUser[];
+}
+
 export default function AdminActivities() {
-  // 2. Destructure the hook
   const { activities, students, submissions, createActivity, editActivity, deleteActivity } = useAdminActivities();
-  
   
   // UI State
   const [isCreatingActivity, setIsCreatingActivity] = useState(false);
@@ -19,7 +29,7 @@ export default function AdminActivities() {
   const [activityInstructions, setActivityInstructions] = useState('');
   const [activityDueDate, setActivityDueDate] = useState(''); 
   const [selectedActivitySections, setSelectedActivitySections] = useState<string[]>([]);
-  const [selectedActivityForReview, setSelectedActivityForReview] = useState<any | null>(null);
+  const [selectedActivityForReview, setSelectedActivityForReview] = useState<ReviewState | null>(null);
   const [reviewTab, setReviewTab] = useState<'submitted' | 'missing'>('submitted');
 
   const toggleActivitySection = (section: string) => {
@@ -60,18 +70,19 @@ export default function AdminActivities() {
     saveAs(content, `${activityName}_${section}_Submissions.zip`);
   };
 
-  const formatTimestamp = (timestamp: any) => {
+  const formatTimestamp = (timestamp: Timestamp | null) => {
     if (!timestamp) return 'Unknown Date';
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    // Safely call toDate() since we know it's a Firebase Timestamp
+    const date = timestamp.toDate();
     return date.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
   };
 
-  const isLate = (submissionDate: any, dueDateString: string) => {
+  const isLate = (submissionDate: Timestamp | null, dueDateString?: string) => {
     if (!dueDateString || !submissionDate) return false;
-    const subDate = submissionDate.toDate ? submissionDate.toDate() : new Date(submissionDate);
+    const subDate = submissionDate.toDate();
     const dueDate = new Date(dueDateString);
     dueDate.setHours(23, 59, 59, 999);
-    return subDate > dueDate;
+    return subDate.getTime() > dueDate.getTime();
   };
 
   return (
@@ -177,7 +188,7 @@ export default function AdminActivities() {
               {reviewTab === 'submitted' && (
                 selectedActivityForReview.sectionSubmissions.length === 0 ? <p>No submissions yet.</p> : (
                   <ul className="submissions-review-list">
-                    {selectedActivityForReview.sectionSubmissions.map((sub: any) => {
+                    {selectedActivityForReview.sectionSubmissions.map((sub: AdminSubmissionData) => {
                       const late = isLate(sub.submittedAt, selectedActivityForReview.activity.dueDate);
                       return (
                         <li key={sub.studentId} className="submission-row">
@@ -197,7 +208,7 @@ export default function AdminActivities() {
               {reviewTab === 'missing' && (
                 selectedActivityForReview.missingStudents.length === 0 ? <p>Everyone has submitted! 🎉</p> : (
                   <ul className="submissions-review-list">
-                    {selectedActivityForReview.missingStudents.map((st: any) => (
+                    {selectedActivityForReview.missingStudents.map((st: StudentUser) => (
                       <li key={st.id} className="submission-row">
                         <strong>{st.lastName}, {st.firstName}</strong>
                         <span className="submission-badge missing">Missing</span>

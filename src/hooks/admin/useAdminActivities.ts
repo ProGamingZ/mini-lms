@@ -1,30 +1,56 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
-import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
+
+export interface AdminActivityData {
+  id: string;
+  title: string;
+  instructions: string;
+  targetSections: string[];
+  dueDate?: string;
+}
+
+export interface StudentUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  section: string;
+}
+
+export interface AdminSubmissionData {
+  id: string;
+  activityId: string;
+  studentId: string;
+  studentName: string;
+  section: string;
+  fileName: string;
+  code: string;
+  submittedAt: Timestamp;
+}
 
 export function useAdminActivities() {
-  const [activities, setActivities] = useState<any[]>([]);
-  const [students, setStudents] = useState<any[]>([]);
-  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [activities, setActivities] = useState<AdminActivityData[]>([]);
+  const [students, setStudents] = useState<StudentUser[]>([]);
+  const [submissions, setSubmissions] = useState<AdminSubmissionData[]>([]);
 
   // 1. Fetch Data
   useEffect(() => {
     const unsub = onSnapshot(query(collection(db, 'activities'), orderBy('createdAt', 'desc')), (snapshot) => {
-      setActivities(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+      setActivities(snapshot.docs.map(d => ({ id: d.id, ...d.data() } as AdminActivityData)));
     });
     return () => unsub();
   }, []);
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'users'), (snapshot) => {
-      setStudents(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+      setStudents(snapshot.docs.map(d => ({ id: d.id, ...d.data() } as StudentUser)));
     });
     return () => unsub();
   }, []);
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'submissions'), (snapshot) => {
-      setSubmissions(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+      setSubmissions(snapshot.docs.map(d => ({ id: d.id, ...d.data() } as AdminSubmissionData)));
     });
     return () => unsub();
   }, []);
