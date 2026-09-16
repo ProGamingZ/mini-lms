@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { auth } from '../config/firebase';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import AdminLessons from '../components/admin/AdminLessons';
-import AdminActivities from '../components/admin/AdminActivities';
+import AdminLessons from '../components/admin/tabs/AdminLessons';
+import AdminActivities from '../components/admin/tabs/AdminActivities';
 import { useTheme } from '../hooks/common/useTheme';
 
 export default function AdminDashboard() {

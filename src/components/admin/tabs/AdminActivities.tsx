@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { downloadSubmissionsZip } from '../../utils/zipGenerator';
+import { downloadSubmissionsZip } from '../../../utils/zipGenerator';
 import styles from './AdminActivities.module.css';
 import ActivityCard from './ActivityCard';
-import ReviewSubmissionsModal from './modals/ReviewSubmissionsModal';
+import ReviewSubmissionsModal from '.././modals/ReviewSubmissionsModal';
 import { 
   useAdminActivities, 
   type AdminActivityData, 
   type StudentUser, 
   type AdminSubmissionData 
-} from '../../hooks/admin/useAdminActivities';
+} from '../../../hooks/admin/useAdminActivities';
 
 const SECTIONS = ["BSCS_3A", "BSCS_3B", "BSCS_3C", "BSIT_3A", "BSIT_3C"];
 

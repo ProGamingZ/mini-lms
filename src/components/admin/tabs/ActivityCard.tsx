@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from './ActivityCard.module.css';
-import EditActivityModal from './modals/EditActivityModal';
-import DeleteConfirmationModal from './modals/DeleteConfirmationModal';
+import EditActivityModal from '.././modals/EditActivityModal';
+import DeleteConfirmationModal from '.././modals/DeleteConfirmationModal';
 
 interface ActivityCardProps {
   id: string;

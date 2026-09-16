@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Folder from './Folder';
 import styles from './AdminLessons.module.css';
-import { useAdminFolders } from '../../hooks/admin/useAdminFolders';
+import { useAdminFolders } from '../../../hooks/admin/useAdminFolders';
 
 const SECTIONS = ["BSCS_3A", "BSCS_3B", "BSCS_3C", "BSIT_3A", "BSIT_3C"];
 

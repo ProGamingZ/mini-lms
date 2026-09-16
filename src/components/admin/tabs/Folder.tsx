@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from './Folder.module.css';
-import EditFolderModal from './modals/EditFolderModal';
-import DeleteConfirmationModal from './modals/DeleteConfirmationModal';
+import EditFolderModal from '.././modals/EditFolderModal';
+import DeleteConfirmationModal from '.././modals/DeleteConfirmationModal';
 
 interface Link { id: string; label: string; url: string; }
 interface FolderProps {
