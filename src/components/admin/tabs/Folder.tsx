@@ -2,6 +2,8 @@ import { useState } from 'react';
 import styles from './Folder.module.css';
 import EditFolderModal from '.././modals/EditFolderModal';
 import DeleteConfirmationModal from '.././modals/DeleteConfirmationModal';
+import AddFileModal from '../modals/AddFileModal';
+import EditFileModal from '../modals/EditFileModal';
 
 interface Link { id: string; label: string; url: string; }
 interface FolderProps {
@@ -14,11 +16,12 @@ interface FolderProps {
   onDeleteFile: (folderId: string, fileId: string) => void;
 }
 
-export default function Folder({ id, title, targetSections, links, allSections, onDeleteFolder, onEditFolder, onDeleteFile }: FolderProps) {
+export default function Folder({ id, title, targetSections, links, allSections, onDeleteFolder, onEditFolder,onAddFile,onEditFile, onDeleteFile }: FolderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const safeLinks = links || []; 
   const [activeModal, setActiveModal] = useState<'editFolder' | 'addFile' | 'editFile' | 'deleteFolder' | 'deleteFile' | null>(null);
   const [selectedFileId, setSelectedFileId] = useState('');
+  const selectedFile = safeLinks.find(link => link.id === selectedFileId);
 
   return (
     <div className={styles.folderWrapper}>
@@ -82,6 +85,30 @@ export default function Folder({ id, title, targetSections, links, allSections, 
           message="Are you sure you want to delete this file?" 
         />
       )}
+
+      {/* Add File Modal */}
+      {activeModal === 'addFile' && (
+        <AddFileModal 
+          isOpen={true} 
+          onClose={() => setActiveModal(null)} 
+          folderId={id} 
+          onAddFile={onAddFile} 
+        />
+      )}
+
+      {/* Edit File Modal */}
+      {activeModal === 'editFile' && selectedFile && (
+        <EditFileModal 
+          isOpen={true} 
+          onClose={() => setActiveModal(null)} 
+          folderId={id} 
+          fileId={selectedFile.id}
+          initialLabel={selectedFile.label}
+          initialUrl={selectedFile.url}
+          onEditFile={onEditFile} 
+        />
+      )}
+      
     </div>
   );
 }
