@@ -1,5 +1,5 @@
 import StudentFolder from '../StudentFolder';
-import styles from '../../../pages/StudentDashboard.module.css';
+import styles from './LessonsTab.module.css';
 // 1. Import the FolderData type from your hook
 import { type FolderData } from '../../../hooks/student/useStudentData';
 

@@ -1,0 +1,10 @@
+.lessonsContainer { display: flex; flex-direction: column; gap: 15px; }
+
+.emptyState { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 20px; background: white; border-radius: 8px; border: 2px dashed #cbd5e1; text-align: center; color: #64748b; margin-top: 20px; }
+.emptyIcon { font-size: 48px; margin-bottom: 15px; opacity: 0.8; }
+.emptyState h4 { font-size: 18px; color: #334155; margin-bottom: 8px; }
+.emptyState p { font-size: 14px; max-width: 400px; }
+
+:global([data-theme="dark"]) :local(.emptyState) { background: var(--bg-card); border-color: var(--border-color); }
+:global([data-theme="dark"]) :local(.emptyState) h4 { color: var(--text-main); }
+:global([data-theme="dark"]) :local(.emptyState) p { color: var(--text-muted); }

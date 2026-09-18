@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import StudentActivity from '../StudentActivity';
-import styles from '../../../pages/StudentDashboard.module.css';
+import styles from './ActivitiesTab.module.css';
 // 1. Import the specific types from your hook
 import { type ActivityData, type StudentProfile } from '../../../hooks/student/useStudentData';
 
