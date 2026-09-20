@@ -2,9 +2,13 @@ import { useState, useEffect } from 'react';
 import { db, auth } from '../../config/firebase';
 import { doc, setDoc, onSnapshot, Timestamp } from 'firebase/firestore';
 
+export interface SubmissionFile {
+  fileName: string;
+  code: string;
+}
+
 export interface SubmissionData {
-  fileName?: string;
-  code?: string;
+  files?: SubmissionFile[];
   submittedAt?: Timestamp; 
 }
 
@@ -19,43 +23,63 @@ export function useStudentSubmission(activityId: string, studentSection?: string
   useEffect(() => {
     if (!studentUid) return;
     const unsub = onSnapshot(doc(db, 'submissions', submissionDocId), (docSnap) => {
-      if (docSnap.exists()) setCurrentSubmission(docSnap.data());
+      if (docSnap.exists()) setCurrentSubmission(docSnap.data() as SubmissionData);
     });
     return () => unsub();
   }, [submissionDocId, studentUid]);
 
-  const uploadSubmission = (file: File | undefined) => {
-    if (!file || !studentUid) return;
+  const uploadSubmission = async (fileList: FileList | null) => {
+    if (!fileList || fileList.length === 0 || !studentUid) return;
 
-    const validExtensions = ['.js', '.txt'];
-    if (!validExtensions.some(ext => file.name.toLowerCase().endsWith(ext))) {
-      return setMessage("❌ Invalid file type. Please upload .js or .txt files only.");
+    const validExtensions = ['.js', '.jsx', '.ts', '.tsx', '.css', '.txt'];
+    let totalSize = 0;
+    const filesArray = Array.from(fileList);
+
+    // 1. Validation Phase
+    for (const file of filesArray) {
+      totalSize += file.size;
+      if (!validExtensions.some(ext => file.name.toLowerCase().endsWith(ext))) {
+        return setMessage(`❌ Invalid file: ${file.name}. React Native/Text files only.`);
+      }
+    }
+
+    if (totalSize > 800 * 1024) { // 800 KB Limit
+      return setMessage("❌ Total file size exceeds 800 KB limit.");
     }
 
     setIsSubmitting(true);
-    setMessage("Uploading...");
+    setMessage("Reading files...");
 
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      try {
-        await setDoc(doc(db, 'submissions', submissionDocId), {
-          studentId: studentUid,
-          studentName: studentName || 'Unknown Student',
-          activityId: activityId,
-          section: studentSection || 'Unassigned',
-          fileName: file.name,
-          code: event.target?.result, 
-          submittedAt: new Date()
+    // 2. Read Files Asynchronously
+    try {
+      const filePromises = filesArray.map(file => {
+        return new Promise<SubmissionFile>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve({ fileName: file.name, code: e.target?.result as string });
+          reader.onerror = () => reject(new Error(`Failed to read ${file.name}`));
+          reader.readAsText(file);
         });
-        setMessage(`✅ Submitted: ${file.name} (Previous file overwritten)`);
-      } catch (error) {
-        const err = error as Error;
-        setMessage("❌ Error submitting file: " + err.message);
-      } finally {
-        setIsSubmitting(false);
-      }
-    };
-    reader.readAsText(file);
+      });
+
+      const processedFiles = await Promise.all(filePromises);
+
+      // 3. Save to Firestore
+      setMessage("Uploading to database...");
+      await setDoc(doc(db, 'submissions', submissionDocId), {
+        studentId: studentUid,
+        studentName: studentName || 'Unknown Student',
+        activityId: activityId,
+        section: studentSection || 'Unassigned',
+        files: processedFiles,
+        submittedAt: new Date()
+      });
+      setMessage(`✅ Submitted ${processedFiles.length} file(s) successfully!`);
+    } catch (error) {
+      const err = error as Error;
+      setMessage("❌ Error submitting files: " + err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return { currentSubmission, isSubmitting, message, uploadSubmission };

@@ -56,7 +56,10 @@ export default function ReviewSubmissionsModal({ selectedActivity, onClose }: Re
                   <li key={sub.studentId} className={styles.submissionRow}>
                     <div>
                       <strong>{sub.studentName}</strong>
-                      <div style={{ fontSize: '12px', color: '#777' }}>File: {sub.fileName}</div>
+                      <div style={{ fontSize: '12px', color: '#777' }}>
+                        {/* Renders the array if it exists, otherwise falls back to the old string */}
+                        Files: {sub.files ? sub.files.map((f: { fileName: string; code: string }) => f.fileName).join(', ') : sub.fileName}
+                      </div>
                       <div style={{ fontSize: '11px', color: '#95a5a6' }}>{formatTimestamp(sub.submittedAt)}</div>
                     </div>
                     <span className={`${styles.submissionBadge} ${late ? styles.submissionBadgeLate : ''}`}>{late ? 'Late' : 'Submitted'}</span>

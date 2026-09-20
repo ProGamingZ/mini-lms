@@ -19,7 +19,7 @@ export default function StudentActivity({ id, title, instructions, dueDate, stud
 
   // 2. Simplified handler
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    uploadSubmission(e.target.files?.[0]);
+    uploadSubmission(e.target.files);
   };
 
   const formattedDueDate = dueDate ? new Date(dueDate).toLocaleDateString() : 'None';
@@ -43,15 +43,18 @@ export default function StudentActivity({ id, title, instructions, dueDate, stud
       </div>
 
       <div className={styles.activitySubmission}>
-        {currentSubmission && (
+        {currentSubmission?.files && currentSubmission.files.length > 0 && (
           <div className={styles.currentSubmissionInfo}>
-            <span>Current Submission: <strong>{currentSubmission.fileName}</strong></span>
+            <span>Current Submission ({currentSubmission.files.length} files): </span>
+            <br />
+            <strong>{currentSubmission.files.map(f => f.fileName).join(', ')}</strong>
           </div>
         )}
 
         <label className={`${styles.uploadBtn} ${isSubmitting ? styles.uploadBtnDisabled : isLate ? styles.uploadBtnLate : ''}`}>
-          {isSubmitting ? 'Uploading...' : currentSubmission ? '🔄 Replace Submitted File' : isLate ? '⬆️ Submit Late' : '⬆️ Upload .js or .txt'}
-          <input type="file" accept=".js,.txt" style={{ display: 'none' }} onChange={handleUpload} disabled={isSubmitting} />
+          {isSubmitting ? 'Uploading...' : currentSubmission?.files ? '🔄 Replace Submitted Files' : isLate ? '⬆️ Submit Late' : '⬆️ Upload Code Files'}
+          {/* ADDED multiple attribute and extended accept list */}
+          <input type="file" multiple accept=".js,.jsx,.ts,.tsx,.css,.txt" style={{ display: 'none' }} onChange={handleUpload} disabled={isSubmitting} />
         </label>
         {message && <p className={styles.submissionMessage}>{message}</p>}
       </div>

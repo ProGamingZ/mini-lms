@@ -23,8 +23,12 @@ export interface AdminSubmissionData {
   studentId: string;
   studentName: string;
   section: string;
-  fileName: string;
-  code: string;
+  // The new multi-file array (optional, because old data doesn't have it)
+  files?: { fileName: string; code: string }[]; 
+  // The legacy single-file properties (optional, because new data doesn't have them)
+  fileName?: string; 
+  code?: string;
+  
   submittedAt: Timestamp;
 }
 
