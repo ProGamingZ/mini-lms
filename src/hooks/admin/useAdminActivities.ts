@@ -8,6 +8,7 @@ export interface AdminActivityData {
   instructions: string;
   targetSections: string[];
   dueDate?: string;
+  isSubmissionDisabled?: boolean;
 }
 
 export interface StudentUser {
@@ -83,5 +84,11 @@ export function useAdminActivities() {
     await deleteDoc(doc(db, 'activities', id));
   };
 
-  return { activities, students, submissions, createActivity, editActivity, deleteActivity };
+  const toggleSubmissionStatus = async (id: string, currentStatus: boolean) => {
+    await updateDoc(doc(db, 'activities', id), {
+      isSubmissionDisabled: !currentStatus
+    });
+  };
+
+  return { activities, students, submissions, createActivity, editActivity, deleteActivity, toggleSubmissionStatus };
 }

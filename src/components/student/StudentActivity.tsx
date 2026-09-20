@@ -9,10 +9,18 @@ interface StudentActivityProps {
   dueDate?: string;
   studentSection?: string;
   studentName?: string;
+  isSubmissionDisabled?: boolean; 
 }
 
-export default function StudentActivity({ id, title, instructions, dueDate, studentSection, studentName }: StudentActivityProps) {
-  
+export default function StudentActivity({ 
+  id, 
+  title, 
+  instructions, 
+  dueDate, 
+  studentSection, 
+  studentName,
+  isSubmissionDisabled 
+}: StudentActivityProps) {
   // 1. Inject custom hooks
   const { timeLeft, isLate } = useCountdown(dueDate);
   const { currentSubmission, isSubmitting, message, uploadSubmission } = useStudentSubmission(id, studentSection, studentName);
@@ -47,14 +55,31 @@ export default function StudentActivity({ id, title, instructions, dueDate, stud
           <div className={styles.currentSubmissionInfo}>
             <span>Current Submission ({currentSubmission.files.length} files): </span>
             <br />
-            <strong>{currentSubmission.files.map(f => f.fileName).join(', ')}</strong>
+            <strong>{currentSubmission.files.map((f: { fileName: string }) => f.fileName).join(', ')}</strong>
           </div>
         )}
 
-        <label className={`${styles.uploadBtn} ${isSubmitting ? styles.uploadBtnDisabled : isLate ? styles.uploadBtnLate : ''}`}>
-          {isSubmitting ? 'Uploading...' : currentSubmission?.files ? '🔄 Replace Submitted Files' : isLate ? '⬆️ Submit Late' : '⬆️ Upload Code Files'}
-          {/* ADDED multiple attribute and extended accept list */}
-          <input type="file" multiple accept=".js,.jsx,.ts,.tsx,.css,.txt" style={{ display: 'none' }} onChange={handleUpload} disabled={isSubmitting} />
+        <label className={`${styles.uploadBtn} ${isSubmissionDisabled ? styles.uploadBtnDisabled : isSubmitting ? styles.uploadBtnDisabled : isLate ? styles.uploadBtnLate : ''}`}>
+          {/* Check if disabled FIRST, then check uploading, then check late */}
+          {isSubmissionDisabled 
+            ? '🔒 Submissions Closed' 
+            : isSubmitting 
+              ? 'Uploading...' 
+              : currentSubmission?.files 
+                ? '🔄 Replace Submitted Files' 
+                : isLate 
+                  ? '⬆️ Submit Late' 
+                  : '⬆️ Upload Code Files'
+          }
+          
+          <input 
+            type="file" 
+            multiple 
+            accept=".js,.jsx,.ts,.tsx,.css,.txt" 
+            style={{ display: 'none' }} 
+            onChange={handleUpload} 
+            disabled={isSubmitting || isSubmissionDisabled} // Disable the HTML input if locked
+          />
         </label>
         {message && <p className={styles.submissionMessage}>{message}</p>}
       </div>

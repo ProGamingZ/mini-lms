@@ -22,6 +22,7 @@ export interface ActivityData {
   instructions: string; 
   dueDate?: string; 
   targetSections: string[]; 
+  isSubmissionDisabled?: boolean;
 }
 
 export function useStudentData() {

@@ -20,7 +20,7 @@ interface ReviewState {
 }
 
 export default function AdminActivities() {
-  const { activities, students, submissions, createActivity, editActivity, deleteActivity } = useAdminActivities();
+  const { activities, students, submissions, createActivity, editActivity, deleteActivity, toggleSubmissionStatus } = useAdminActivities();
   
   const [isCreatingActivity, setIsCreatingActivity] = useState(false);
   const [activityTitle, setActivityTitle] = useState('');
@@ -102,6 +102,7 @@ export default function AdminActivities() {
                 allSections={SECTIONS} 
                 onDeleteActivity={deleteActivity} 
                 onEditActivity={editActivity} 
+                onToggleSubmission={toggleSubmissionStatus}
               />
               
               <div className={styles.activityStatsPanel}>

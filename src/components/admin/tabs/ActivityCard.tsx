@@ -10,8 +10,10 @@ interface ActivityCardProps {
   targetSections: string[];
   dueDate?: string;
   allSections: string[];
+  isSubmissionDisabled?: boolean;
   onDeleteActivity: (id: string) => void;
   onEditActivity: (id: string, newTitle: string, newInstructions: string, newSections: string[], newDueDate: string) => void;
+  onToggleSubmission: (id: string, currentStatus: boolean) => void; 
 }
 
 export default function ActivityCard({
@@ -21,8 +23,10 @@ export default function ActivityCard({
   targetSections,
   dueDate,
   allSections,
+  isSubmissionDisabled,
   onDeleteActivity,
-  onEditActivity
+  onEditActivity,
+  onToggleSubmission
 }: ActivityCardProps) {
   const [activeModal, setActiveModal] = useState<'edit' | 'delete' | null>(null);
 
@@ -38,6 +42,17 @@ export default function ActivityCard({
           </div>
         </div>
         <div className={styles.actionButtons}>
+          {/* New Toggle Button */}
+          <button 
+            onClick={() => onToggleSubmission(id, !!isSubmissionDisabled)}
+            style={{ 
+              borderColor: isSubmissionDisabled ? '#27ae60' : '#f39c12', 
+              color: isSubmissionDisabled ? '#27ae60' : '#f39c12' 
+            }}
+          >
+            {isSubmissionDisabled ? '🔓 Enable Submissions' : '🔒 Disable Submissions'}
+          </button>
+          
           <button onClick={() => setActiveModal('edit')}>
             Edit Activity
           </button>
